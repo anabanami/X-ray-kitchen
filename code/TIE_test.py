@@ -14,9 +14,17 @@ os.makedirs(folder, exist_ok=True)
 os.system(f'rm {folder}/*.png')
 
 # functions
+
 def TIE(z, I, Φ):
     # propagating in free space
-    return 2 * ifft(2 * np.pi * (- k**2) * np.convolve(fft(I), fft(Φ), mode='same'))
+    return - (1 / k) * (2 * ifft(2 * np.pi * (- k**2) * np.convolve(fft(I), fft(Φ), mode='same')))
+
+def dzdΦ():
+    return - k * δ(x, z)
+
+def δ(x, z):
+    # constant in x zero everywhere else... depends on the geometry of the object
+    return ????
 
 def Runge_Kutta(z, delta_z, I, Φ):
     k1 = TIE(z, I, Φ)
@@ -32,10 +40,9 @@ if __name__ == '__main__':
     n = x.size
     x_step = x[1] - x[0]
 
-    λ = 1 * nm # soft x-rays wavelength
+    λ = 0.01 * nm # x-rays wavelength
     k0 = 2 * np.pi / λ 
-    # For Fourier space
-    # one dimension only
+    # For Fourier space (one dimension only)
     k = 2 * np.pi * np.fft.fftfreq(n, x_step)
 
     # Propagation loop
@@ -52,8 +59,8 @@ if __name__ == '__main__':
 
         if not i % 500:
             plt.plot(x, np.real(I), label="real I")
-            plt.plot(x, np.imag(I), label="imaginary I")
-            plt.plot(x, np.real(Φ), label="real Φ")
+            # plt.plot(x, np.imag(I), label="imaginary I")
+            # plt.plot(x, np.real(Φ), label="real Φ")
             plt.plot(x, np.imag(Φ), label="imaginary Φ")
             plt.xlim(-x_max, x_max)
             plt.legend()
