@@ -10,13 +10,13 @@ from physunits import m, mm, nm
 plt.rcParams['figure.dpi'] = 200
 
 folder = Path('TIE')
-os.makedirs(folder, exist_ok=True)
-os.system(f'rm {folder}/*.png')
+# os.makedirs(folder, exist_ok=True)
+# os.system(f'rm {folder}/*.png')
 
 # functions
 def TIE(z, I, Φ):
-    # propagating in free space
-    return - (1 / k) * (2 * ifft(2 * np.pi * (- k**2) * np.convolve(fft(I), fft(Φ), mode='same')))
+    # propagating in space
+    return - (1 / k) * (2 * ifft(2 * np.pi * (- k**2) * fft(I) * fft(Φ)))
 
 def δ(x_array, z_value):
     # refractive index: constant inside the cylinder but zero everywhere else
@@ -25,6 +25,7 @@ def δ(x_array, z_value):
     for i in range(len(x_array)):
         δ_array[(z_value - z_c)**2 + (x_array[i] - x_c)**2 <= R**2] = δ0
         # print(f"{δ_array = }\n")
+    return δ_array
 
 def dΨ_dz(z, Ψ):
     # state vector of derivatives in z
@@ -41,6 +42,7 @@ def Runge_Kutta(z, delta_z, Ψ):
     k4 = dΨ_dz(z + delta_z, Ψ + k3 * delta_z) 
     return Ψ + (delta_z / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
 
+# -------------------------------------------------------------------------------- #
 
 if __name__ == '__main__':
 
@@ -54,14 +56,14 @@ if __name__ == '__main__':
     λ = 0.01 * nm # x-rays wavelength
     k0 = 2 * np.pi / λ 
 
-    # For Fourier space (one dimension only)
+    # For Fourier space (x dimension only)
     k = 2 * np.pi * np.fft.fftfreq(n, x_step)
 
     # Propagation parameters & loop
     i = 0
-    z = 0
+    z = 0 * m
     z_final = 1 * m
-    delta_z = 0.1 * m # correct this soon! make step smaller
+    delta_z = 0.01 * m
 
     # circle parameters
     R = 12.75 / 2 * mm
@@ -72,29 +74,26 @@ if __name__ == '__main__':
     I = np.ones_like(x)
     Φ = np.zeros_like(x)
 
-    state_vector = [I, Φ]
+    Ψ = [I, Φ]
 
     while z < z_final:
 
-        # TEST PLOTS
-        if not i % 500:
-            plt.plot(x, np.real(I), label="real I")
-            plt.plot(x, np.imag(I), label="imaginary I")
-            plt.plot(x, np.real(Φ), label="real Φ")
-            plt.plot(x, np.imag(Φ), label="imaginary Φ")
-            plt.xlim(-x_max, x_max)
-            plt.legend()
-            plt.xlabel("z")
-            plt.ylabel("x")
-            # plt.title(f"")
-            plt.savefig(folder/f'{i:04d}.png')
-            # plt.show()
-            plt.clf()
+        ## TEST PLOTS
+        # if not i % 100:
+        #     plt.plot(x, np.real(I), label="real I")
+        #     # plt.plot(x, np.imag(I), label="imaginary I")
+        #     # plt.plot(x, np.real(Φ), label="real Φ")
+        #     plt.plot(x, np.imag(Φ), label="imaginary Φ")
+        #     plt.xlim(-x_max, x_max)
+        #     plt.legend()
+        #     plt.xlabel("z")
+        #     plt.ylabel("x")
+        #     # plt.title(f"")
+        #     plt.savefig(folder/f'{i:04d}.png')
+        #     # plt.show()
+        #     plt.clf()
            
-        # Evolution step
-        state_vector = Runge_Kutta(z, delta_z, state_vector)
-
-        # δ(x, z)
-        
+        # spatial evolution step
+        Ψ = Runge_Kutta(z, delta_z, Ψ)
         i += 1
         z += delta_z
