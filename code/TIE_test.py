@@ -16,7 +16,7 @@ folder = Path('TIE')
 # functions
 def TIE(z, I, Φ):
     # propagating in space
-    return - (1 / k) * (2 * ifft(2 * np.pi * (- k**2) * fft(I) * fft(Φ)))
+    return - (1 / k0) * (2 * ifft(2 * np.pi * (- k**2) * fft(I) * fft(Φ)))
 
 def δ(x_array, z_value):
     # refractive index: constant inside the cylinder but zero everywhere else
@@ -48,12 +48,12 @@ if __name__ == '__main__':
 
     # x- array parameters
     x_max = 5
-    x = np.linspace(-x_max, x_max, 1024, endpoint=False)
+    x = np.linspace(-x_max, x_max, 1000, endpoint=False)
     n = x.size
     x_step = x[1] - x[0]
 
     # X-ray beam parameters
-    λ = 0.01 * nm # x-rays wavelength
+    λ = 0.05166 * nm # x-rays wavelength
     k0 = 2 * np.pi / λ 
 
     # For Fourier space (x dimension only)
@@ -63,7 +63,7 @@ if __name__ == '__main__':
     i = 0
     z = 0 * m
     z_final = 1 * m
-    delta_z = 0.01 * m
+    delta_z = 0.001 * m
 
     # circle parameters
     R = 12.75 / 2 * mm
@@ -76,24 +76,66 @@ if __name__ == '__main__':
 
     Ψ = [I, Φ]
 
+    δ_array = []
+    z_array = []
+
     while z < z_final:
 
-        ## TEST PLOTS
-        # if not i % 100:
-        #     plt.plot(x, np.real(I), label="real I")
-        #     # plt.plot(x, np.imag(I), label="imaginary I")
-        #     # plt.plot(x, np.real(Φ), label="real Φ")
-        #     plt.plot(x, np.imag(Φ), label="imaginary Φ")
-        #     plt.xlim(-x_max, x_max)
-        #     plt.legend()
-        #     plt.xlabel("z")
-        #     plt.ylabel("x")
-        #     # plt.title(f"")
-        #     plt.savefig(folder/f'{i:04d}.png')
-        #     # plt.show()
-        #     plt.clf()
-           
+        z_array.append(z)
+
+        circle_slices = δ(x, z)
+        δ_array.append(circle_slices)
+
         # spatial evolution step
         Ψ = Runge_Kutta(z, delta_z, Ψ)
         i += 1
         z += delta_z
+
+    # After the integration occurs I unpack the state vector
+    dzI, dzΦ = Ψ # DOES THIS MAKE SENSE?
+
+    # TEST PLOTS
+    # line: z = x ??
+    plt.plot(x, z_array)
+    plt.xlabel("x")
+    plt.ylabel("z")
+    plt.show()
+
+    # top hat 
+    plt.plot(z_array, δ_array)
+    plt.xlabel("z")
+    plt.ylabel("δ")
+    plt.show()
+
+    # HOW DO I VISUALISE THESE?
+    # constant (I = 1 vs z)??
+    plt.plot(z_array, dzI)
+    plt.xlabel("z")
+    plt.ylabel("dzI")
+    plt.show()
+
+    # zig zag ??
+    plt.plot(z_array, np.real(dzΦ), label="real Φ")
+    plt.plot(x, np.imag(dzΦ), label="imaginary Φ")
+    plt.xlabel("z")
+    plt.ylabel("dzΦ")
+    plt.legend()
+    plt.show()
+
+# -------------------------------------------------------------------------------- #
+
+        ## TEST PLOTS
+        # if not i % 100:
+        #     plt.plot(x, np.real(Φ), label="real Φ")
+        #     plt.plot(x, np.imag(Φ), label="imaginary Φ")
+        #     plt.xlim(-x_max, x_max)
+        #     plt.legend()
+        #     plt.xlabel("x")
+        #     plt.ylabel("Φ")
+        #     # plt.title(f"")
+        #     plt.savefig(folder/f'{i:04d}.png')
+        #     plt.show()
+        #     plt.clf()
+           
+        
+
