@@ -9,11 +9,6 @@ from physunits import m, cm, mm, nm
 
 plt.rcParams['figure.dpi'] = 150
 
-
-folder = Path('dI_dz')
-os.makedirs(folder, exist_ok=True)
-os.system(f'rm {folder}/*.png')
-
 # functions
 
 def TIE(z, I, Φ):
@@ -25,11 +20,11 @@ def TIE(z, I, Φ):
     return dI_dz
 
 
-def gaussian2D(x, z, amplitude=1 * mm, centre=0, sigma=1 * mm):
+def gaussian2D(x, z, amplitude=1, x0=0, z0=0, sigma=1):
+    # refractive index gaussian distribution for test
     return (
         amplitude
-        * (1 / (sigma * (np.sqrt(2 * np.pi))))
-        * (np.exp((-1 / 2) * ((((x - centre) ** 2 + (z - centre) ** 2) / sigma) ** 2)))
+        * (np.exp((-1 / 2) * (((x - x0) ** 2 + (z - z0) ** 2) / (sigma ** 2))))
     )
 
 
@@ -37,10 +32,8 @@ def δ(x, z):
     # refractive index: constant inside the cylinder but zero everywhere else
     δ0 = 462.8 * nm
     δ_array = np.zeros_like(x * z)
-    # δ_array[(z - z_c) ** 2 + (x - x_c) ** 2 <= R ** 2] = δ0
-    δ_array[gaussian2D(x, z) >= R ** 2] = δ0
-
-    # print(f"\n{np.shape(δ_array) = }\n")
+    δ_array[(z - z_c) ** 2 + (x - x_c) ** 2 <= R ** 2] = δ0
+    # δ_array = gaussian2D(x, z, δ0, x_c, z_c, 25 * mm)
     return δ_array
 
 
@@ -48,18 +41,6 @@ def dΨ_dz(z, Ψ):
     # state vector of derivatives in z
     I, Φ = Ψ
     dI_dz = TIE(z, I, Φ)  # how much does this grow per z?
-
-    # if not i % 1000:
-    #     # # dI_dz Test plot
-    #     plt.plot(x, dI_dz, label="dI_dz")
-    #     plt.xlabel("x")
-    #     plt.ylabel("dI_dz")
-    #     plt.legend()
-    #     plt.title(f"dI_dz(x) for {z =:.4f}")
-    #     plt.savefig(folder/f"{i:04d}")
-    #     plt.show()
-    #     plt.clf()
-
     dΦ_dz = -k0 * δ(x, z)  # how much does this grow per z?
 
     return np.array([dI_dz, dΦ_dz])
@@ -111,8 +92,6 @@ if __name__ == '__main__':
     # ICs
     I = np.ones_like(x)
     Φ = np.zeros_like(x)
-    # Φ = gaussian(x) # testing nice smooth IC
-
     Ψ = np.array([I, Φ])
 
     ######################### RK LOOP ###############################
@@ -141,34 +120,27 @@ if __name__ == '__main__':
 
     # # dI_dz Test plot
     # plt.plot(x, dI_dz, label="dI_dz")
-    # # plt.xlim(-20 * mm, 20 * mm)
     # plt.xlabel("x")
     # plt.ylabel("dI_dz")
     # plt.legend()
     # plt.title(f"dI_dz(x) for {z =:.4f}")
-    # # plt.savefig(folder/f"{i:04d}")
     # plt.show()
-    # # plt.clf()
 
     # # # dΦ_dz Test plot
     # plt.plot(x, dΦ_dz, label="dΦ_dz")
-    # plt.xlim(-20 * mm, 20 * mm)
     # plt.xlabel("x")
     # plt.ylabel("dΦ_dz")
     # plt.legend()
     # plt.title(f"dΦ_dz(x) for {z =:.4f}")
-    # # plt.savefig(folder2/f"{i:04d}")
     # plt.show()
-    # # plt.clf()
     # ##########
 
     # # Testing RK near the centre
     psi_list = np.load("TIE/psi_list.npy")
-    I, Φ = psi_list[9363]
+    I, Φ = psi_list[9400]
 
     # # I Test plot
     plt.plot(x, I, label="I")
-    # plt.xlim(-20 * mm, 20 * mm)
     plt.xlabel("x")
     plt.ylabel("I")
     plt.legend()
@@ -177,7 +149,6 @@ if __name__ == '__main__':
 
     # Φ Test plot
     plt.plot(x, Φ, label="Φ")
-    # plt.xlim(-10 * mm, 10 * mm)
     plt.xlabel("x")
     plt.ylabel("Φ")
     plt.legend()
@@ -193,9 +164,9 @@ if __name__ == '__main__':
     # plt.colorbar()
     # plt.xlabel("x")
     # plt.ylabel(r"$\delta(x, z)$")
-    # # plt.legend()
     # plt.show()
     # ###########
+
 
     ########################### OTHER ####################################
 

@@ -31,12 +31,9 @@ def TIE(z, I, Φ):
     # The intensity and phase evolution of a paraxial monochromatic
     # scalar electromagnetic wave on propagation
 
-    dI_dz = (-1 / k0) * (ifft(1j * k * fft(I)) * ifft(1j * k * fft(Φ))) + I * ifft((1j * k)**2 * fft(Φ))
-    # print(f"\n########")
-    # print(f"\n{all(fft(Φ) == 0) = }")
-    # print(f"\n{all(fft(I) == 0) = }")
-    # print(f"\n{all(ifft((2 * np.pi)**2 * -k**2 * fft(I) * fft(Φ)) == 0) = }")
-    # print(f"\n{all(I * ifft(2 * np.pi * - k**2 * fft(Φ)) == 0) = }")
+    dI_dz = (-1 / k0) * (
+        ifft(1j * k * fft(I)) * ifft(1j * k * fft(Φ)) + I * ifft((1j * k) ** 2 * fft(Φ))
+    )
     # print(f"\n{all(dI_dz == 0) = }")
     return dI_dz
 
@@ -176,38 +173,38 @@ if __name__ == '__main__':
 
     ############
     # z = np.linspace(-z_max, z_max, 2000, endpoint=False).reshape((2000, 1))
-    z = z_c
-    ## PLAYING AROUND with Φ ###
-    # I unpack the state vector to visualise the phase
-    I, Φ = Ψ
-    # phase test PLOT #
-    # if not i % 100:
-    plt.plot(x, Φ[:], label="Φ")
-    plt.xlim(-20 * mm, 20 * mm)
-    plt.xlabel("x")
-    plt.ylabel("Φ")
-    plt.legend()
-    plt.title(f"Φ(x) for z = {z:.4f}")
-    plt.savefig(folder3/f'{i:04d}.png')
-    # plt.show()
-    plt.clf()
+    # z = z_c
+    # ## PLAYING AROUND with Φ ###
+    # # I unpack the state vector to visualise the phase
+    # I, Φ = Ψ
+    # # phase test PLOT #
+    # # if not i % 100:
+    # plt.plot(x, Φ[:], label="Φ")
+    # plt.xlim(-20 * mm, 20 * mm)
+    # plt.xlabel("x")
+    # plt.ylabel("Φ")
+    # plt.legend()
+    # plt.title(f"Φ(x) for z = {z:.4f}")
+    # plt.savefig(folder3/f'{i:04d}.png')
+    # # plt.show()
+    # plt.clf()
 
-    ## PLAYING AROUND with dI_dz ###
-    print(f"\n{np.shape(dI_dz) = }") # this returns: (2048,)
-    # I unpack the state vector to visualise the dI_dz
-    I, Φ = Ψ
-    # dI_dz Test plot
-    if not i % 10:
-        plt.plot(x, dI_dz, label="dI_dz")
-        plt.xlim(-20 * mm, 20 * mm)
-        plt.xlabel("x")
-        plt.ylabel("dI_dz")
-        plt.legend()
-        plt.title(f"dI_dz(x) for {z =:.4f}")
-        plt.savefig(folder4/f"{i:04d}")
-        # plt.show()
-        plt.clf()
-    ###########
+    # ## PLAYING AROUND with dI_dz ###
+    # print(f"\n{np.shape(dI_dz) = }") # this returns: (2048,)
+    # # I unpack the state vector to visualise the dI_dz
+    # I, Φ = Ψ
+    # # dI_dz Test plot
+    # if not i % 10:
+    #     plt.plot(x, dI_dz, label="dI_dz")
+    #     plt.xlim(-20 * mm, 20 * mm)
+    #     plt.xlabel("x")
+    #     plt.ylabel("dI_dz")
+    #     plt.legend()
+    #     plt.title(f"dI_dz(x) for {z =:.4f}")
+    #     plt.savefig(folder4/f"{i:04d}")
+    #     # plt.show()
+    #     plt.clf()
+    # ###########
 
 
     ################################### TODO ###################################
