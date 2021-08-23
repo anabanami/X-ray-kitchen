@@ -19,21 +19,17 @@ def TIE(z, I, Φ):
     )
     return dI_dz
 
-
-def gaussian2D(x, z, amplitude=1, x0=0, z0=0, sigma=1):
-    # refractive index gaussian distribution for test
-    return (
-        amplitude
-        * (np.exp((-1 / 2) * (((x - x0) ** 2 + (z - z0) ** 2) / (sigma ** 2))))
-    )
-
-
 def δ(x, z):
     # refractive index: constant inside the cylinder but zero everywhere else
     δ0 = 462.8 * nm
-    δ_array = np.zeros_like(x * z)
-    δ_array[(z - z_c) ** 2 + (x - x_c) ** 2 <= R ** 2] = δ0
-    # δ_array = gaussian2D(x, z, δ0, x_c, z_c, 25 * mm)
+    # δ_array = np.zeros_like(x * z)
+    # δ_array[(z - z_c) ** 2 + (x - x_c) ** 2 <= R ** 2] = δ0
+
+    # refractive index: δ0 within the cylinder decreasing to zero at the edges
+    # CDF inspired:
+    r = np.sqrt(x**2 + z**2)
+    𝜎 = 0.05 * mm
+    δ_array = δ0 * (1 / (1 + np.exp((r - R) / 𝜎)))
     return δ_array
 
 
@@ -55,6 +51,25 @@ def Runge_Kutta(z, delta_z, Ψ):
     k3 = dΨ_dz(z + delta_z / 2, Ψ + k2 * delta_z / 2)
     k4 = dΨ_dz(z + delta_z, Ψ + k3 * delta_z)
     return Ψ + (delta_z / 6) * (k1 + 2 * k2 + 2 * k3 + k4)  # array shape = (2, 2048)
+
+
+def complex_array_to_rgb(Ψ, i):
+    '''Takes an array of complex numbers and converts it to an array of [r, g, b],
+    where phase gives hue and saturaton/value are given by the absolute value.
+    Especially for use with imshow for complex plots.'''
+
+    I, Φ = Ψ
+    absmax = np.abs(I).max()
+    # print(f"\n{absmax = } ")
+    hsv = np.zeros(Ψ.shape + (3,), dtype='float')
+    # print(f"\n{hsv = }")
+    hsv[:, :, 0] = Φ / (2 * np.pi) % 1
+    hsv[:, :, 1] = 1
+    hsv[:, :, 2] = np.clip(np.abs(I) / absmax, 0, 1)
+    # print(f"\n{hsv =  }")
+    rgb = matplotlib.colors.hsv_to_rgb(hsv)
+    # print(f"\n{rgb = }")
+    return rgb
 
 
 # -------------------------------------------------------------------------------- #
@@ -94,23 +109,23 @@ if __name__ == '__main__':
     Φ = np.zeros_like(x)
     Ψ = np.array([I, Φ])
 
-    ######################### RK LOOP ###############################
+   ########################## RK LOOP ###############################
 
-    # psi_list = []
-    # while z < z_final:
+    psi_list = []
+    while z < z_final:
 
-    #     print(f"{i = }")
+        print(f"{i = }")
 
-    #     # spatial evolution step
-    #     Ψ = Runge_Kutta(z, delta_z, Ψ)
-    #     # print(f"\n{Ψ = }")
+        # spatial evolution step
+        Ψ = Runge_Kutta(z, delta_z, Ψ)
+        # print(f"\n{Ψ = }")
 
-    #     psi_list.append(Ψ)
-    #     i += 1
-    #     z += delta_z
+        psi_list.append(Ψ)
+        i += 1
+        z += delta_z
 
-    # psi_list = np.array(psi_list)
-    # np.save(f'TIE/psi_list.npy', psi_list)
+    psi_list = np.array(psi_list)
+    np.save(f'psi_list.npy', psi_list)
 
     ######################### PLOTS & TESTS ###############################
 
@@ -135,26 +150,29 @@ if __name__ == '__main__':
     # plt.show()
     # ##########
 
-    # # Testing RK near the centre
-    psi_list = np.load("TIE/psi_list.npy")
-    I, Φ = psi_list[9400]
+    # # # Testing RK near the centre
+    # # psi_list = np.load("psi_list.npy")
+    # I, Φ = psi_list[9400]
+    # # print(np.iscomplex(I)) # array is complex valued
+    # # print(np.iscomplex(Φ)) # array is real valued
 
-    # # I Test plot
-    plt.plot(x, I, label="I")
-    plt.xlabel("x")
-    plt.ylabel("I")
-    plt.legend()
-    plt.title(f"I(x) for {z =:.4f}")
-    plt.show()
+    # # # I Test plot
+    # plt.plot(x, np.real(I), label="I")
+    # # plt.plot(x, np.imag(I), label="imag I")
+    # plt.xlabel("x")
+    # plt.ylabel("I")
+    # plt.legend()
+    # plt.title(f"I(x) for {z =:.4f}")
+    # plt.show()
 
-    # Φ Test plot
-    plt.plot(x, Φ, label="Φ")
-    plt.xlabel("x")
-    plt.ylabel("Φ")
-    plt.legend()
-    plt.title(f"Φ(x) for {z =:.4f}")
-    plt.show()
-    ##########
+    # # Φ Test plot
+    # plt.plot(x, np.real(Φ), label="Φ")
+    # plt.xlabel("x")
+    # plt.ylabel("Φ")
+    # plt.legend()
+    # plt.title(f"Φ(x) for {z =:.4f}")
+    # plt.show()
+    # ##########
 
     # # ###########
     # ## PLAYING AROUND with δ ###
