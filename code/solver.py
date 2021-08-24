@@ -9,14 +9,18 @@ from physunits import m, cm, mm, nm
 
 plt.rcParams['figure.dpi'] = 150
 
+# folder = Path('Simulation')
+# os.makedirs(folder, exist_ok=True)
+# os.system(f'rm {folder}/*.png')
+
 # functions
 
 def TIE(z, I, Φ):
     # The intensity and phase evolution of a paraxial monochromatic
     # scalar electromagnetic wave on propagation
     dI_dz = (-1 / k0) * (
-        ifft(1j * k * fft(I)) * ifft(1j * k * fft(Φ)) + I * ifft((1j * k) ** 2 * fft(Φ))
-    )
+        np.real(ifft(1j * k * fft(I)) * ifft(1j * k * fft(Φ)) + I * ifft((1j * k) ** 2 * fft(Φ))
+    ))
     return dI_dz
 
 def δ(x, z):
@@ -53,22 +57,23 @@ def Runge_Kutta(z, delta_z, Ψ):
     return Ψ + (delta_z / 6) * (k1 + 2 * k2 + 2 * k3 + k4)  # array shape = (2, 2048)
 
 
-def complex_array_to_rgb(Ψ, i):
-    '''Takes an array of complex numbers and converts it to an array of [r, g, b],
+def array2D_to_rgb(psi_list):
+    '''Takes a 2D array of numbers and converts it to an array of [r, g, b],
     where phase gives hue and saturaton/value are given by the absolute value.
-    Especially for use with imshow for complex plots.'''
+    Especially for use with imshow plots.'''
 
-    I, Φ = Ψ
-    absmax = np.abs(I).max()
-    # print(f"\n{absmax = } ")
-    hsv = np.zeros(Ψ.shape + (3,), dtype='float')
-    # print(f"\n{hsv = }")
-    hsv[:, :, 0] = Φ / (2 * np.pi) % 1
+    I_list, Φ_list = psi_list
+
+    absmax = np.abs(I_list).max()
+    absmin = np.abs(I_list).min()
+
+    hsv = np.zeros(I_list.shape + (3,), dtype='float')
+    hsv[:, :, 0] = Φ_list / (2 * np.pi) % 1
     hsv[:, :, 1] = 1
-    hsv[:, :, 2] = np.clip(np.abs(I) / absmax, 0, 1)
-    # print(f"\n{hsv =  }")
+    hsv[:, :, 2] = np.abs(I_list) / absmax 
+
     rgb = matplotlib.colors.hsv_to_rgb(hsv)
-    # print(f"\n{rgb = }")
+
     return rgb
 
 
@@ -111,24 +116,74 @@ if __name__ == '__main__':
 
    ########################## RK LOOP ###############################
 
-    psi_list = []
-    while z < z_final:
+    # psi_list = []
+    # while z < z_final:
 
-        print(f"{i = }")
+    #     print(f"{i = }")
 
-        # spatial evolution step
-        Ψ = Runge_Kutta(z, delta_z, Ψ)
-        # print(f"\n{Ψ = }")
+    #     # spatial evolution step
+    #     Ψ = Runge_Kutta(z, delta_z, Ψ)
+    #     # print(f"\n{Ψ = }")
+    #     if not i % 10:
+    #         psi_list.append(Ψ)
+    #     i += 1
+    #     z += delta_z
 
-        psi_list.append(Ψ)
-        i += 1
-        z += delta_z
+    # psi_list = np.array(psi_list)
+    # print(f"{np.shape(psi_list)}")
 
-    psi_list = np.array(psi_list)
-    np.save(f'psi_list.npy', psi_list)
+    # np.save(f'psi_list.npy', psi_list)
 
     ######################### PLOTS & TESTS ###############################
+    # Load and transpose
+    psi_list = np.load("psi_list.npy")
+    psi_list = psi_list.transpose(1, 2, 0)
+    # print(f"\n{np.shape(psi_list) = }") # this returns np.shape(psi_list) = (2, 2048, 2001)
 
+    
+    plt.imshow(array2D_to_rgb(psi_list),
+                cmap="gist_rainbow",
+                origin='lower')
+    plt.colorbar()
+    plt.xlabel("z")
+    plt.ylabel("rgb")
+    plt.show()
+
+    # ###############################
+
+    # I_list, Φ_list = psi_list
+
+    # plt.imshow(I_list,
+    #             cmap="gist_rainbow",
+    #             origin='lower')
+    # plt.colorbar()
+    # plt.xlabel("z")
+    # plt.ylabel("I")
+    # plt.show()
+
+    # ###############################
+
+    # plt.imshow(Φ_list,
+    #             cmap="gist_rainbow",
+    #             origin='lower')
+    # plt.colorbar()
+    # plt.xlabel("z")
+    # plt.ylabel("Φ")
+    # plt.show()
+
+    ###############################
+    ## Simulation frame
+    # plt.imshow(array2D_to_rgb(psi_list),
+    #             cmap="gist_rainbow",
+    #             origin='lower')
+    # plt.colorbar()
+    # plt.xlabel("z")
+    # # plt.ylabel("?")
+    # # plt.savefig(f'folder/{i:04d}.png')
+    # plt.show()
+    # # plt.clf()
+
+    ########################### OTHER ####################################
     # # z = np.linspace(-x_max, x_max, 2000, endpoint=False).reshape((2000, 1))
     # z = z_c
     # dI_dz, dΦ_dz = dΨ_dz(z, Ψ)
@@ -150,9 +205,9 @@ if __name__ == '__main__':
     # plt.show()
     # ##########
 
-    # # # Testing RK near the centre
-    # # psi_list = np.load("psi_list.npy")
-    # I, Φ = psi_list[9400]
+    # # Testing RK near the centre
+    # psi_list = np.load("psi_list.npy")
+    # I, Φ = psi_list[1000]
     # # print(np.iscomplex(I)) # array is complex valued
     # # print(np.iscomplex(Φ)) # array is real valued
 
@@ -184,15 +239,3 @@ if __name__ == '__main__':
     # plt.ylabel(r"$\delta(x, z)$")
     # plt.show()
     # ###########
-
-
-    ########################### OTHER ####################################
-
-    # # gaussian Test plot
-    # # print(f"\n{np.shape(gaussian2D(x, z)[1, :]) = }\n")
-    # plt.plot(x, gaussian2D(x, z)[1, :], label="gaussian2D")
-    # plt.xlabel("x")
-    # plt.legend()
-    # plt.show()
-    # # plt.clf()
-    ##########
