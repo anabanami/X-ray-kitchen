@@ -64,13 +64,12 @@ def array2D_to_rgb(psi_list):
 
     I_list, Φ_list = psi_list
 
-    absmax = np.abs(I_list).max()
-    absmin = np.abs(I_list).min()
+    Imax = I_list.max()
 
     hsv = np.zeros(I_list.shape + (3,), dtype='float')
     hsv[:, :, 0] = Φ_list / (2 * np.pi) % 1
     hsv[:, :, 1] = 1
-    hsv[:, :, 2] = np.abs(I_list) / absmax 
+    hsv[:, :, 2] = np.clip(np.abs(m * I_list) / Imax , 0, 1)
 
     rgb = matplotlib.colors.hsv_to_rgb(hsv)
 
