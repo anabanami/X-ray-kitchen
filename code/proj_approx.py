@@ -144,11 +144,10 @@ if __name__ == '__main__':
 
     # # TODO:
     # # PLOTS ATTENUATION FACTOR I/I0 vs x (in 1D) and vs x, z (2D)
-    plt.plot(x, I_list[1000] / I_0, label="I")
+    plt.plot(x, I_list[1000] / I_0)
     plt.xlabel("x")
-    plt.ylabel("I")
-    plt.legend()
-    plt.title(f"I(x)")
+    plt.ylabel(r"$I(x)/I_{0}$")
+    plt.title(r"Attenuation factor: $I(x)/I_{0}$ ")
     plt.show()
 
 
