@@ -136,19 +136,18 @@ if __name__ == '__main__':
     ######################### PLOTS & TESTS ###############################
     # Load and transpose
     psi_list = np.load("psi_list.npy")
-    psi_list = psi_list.transpose(1, 2, 0)
-    # print(f"\n{np.shape(psi_list) = }") # this returns np.shape(psi_list) = (2, 2048, 2001)
+    # psi_list = psi_list.transpose(1, 2, 0) # this returns np.shape(psi_list) = (2, 2048, 2001)
 
     
-    plt.imshow(array2D_to_rgb(psi_list),
-                cmap="gist_rainbow",
-                origin='lower')
-    plt.colorbar()
-    plt.xlabel("z")
-    plt.ylabel("rgb")
-    plt.show()
+    # plt.imshow(array2D_to_rgb(psi_list),
+    #             cmap="gist_rainbow",
+    #             origin='lower')
+    # plt.colorbar()
+    # plt.xlabel("z")
+    # plt.ylabel("rgb")
+    # plt.show()
 
-    # ###############################
+    # # ###############################
 
     # I_list, Φ_list = psi_list
 
@@ -169,18 +168,6 @@ if __name__ == '__main__':
     # plt.xlabel("z")
     # plt.ylabel("Φ")
     # plt.show()
-
-    ###############################
-    ## Simulation frame
-    # plt.imshow(array2D_to_rgb(psi_list),
-    #             cmap="gist_rainbow",
-    #             origin='lower')
-    # plt.colorbar()
-    # plt.xlabel("z")
-    # # plt.ylabel("?")
-    # # plt.savefig(f'folder/{i:04d}.png')
-    # plt.show()
-    # # plt.clf()
 
     ########################### OTHER ####################################
     # # z = np.linspace(-x_max, x_max, 2000, endpoint=False).reshape((2000, 1))
@@ -206,27 +193,27 @@ if __name__ == '__main__':
 
     # # Testing RK near the centre
     # psi_list = np.load("psi_list.npy")
-    # I, Φ = psi_list[1000]
-    # # print(np.iscomplex(I)) # array is complex valued
-    # # print(np.iscomplex(Φ)) # array is real valued
+    I, Φ = psi_list[2000]
+    # print(np.iscomplex(I)) # array is complex valued
+    # print(np.iscomplex(Φ)) # array is real valued
 
-    # # # I Test plot
-    # plt.plot(x, np.real(I), label="I")
-    # # plt.plot(x, np.imag(I), label="imag I")
-    # plt.xlabel("x")
-    # plt.ylabel("I")
-    # plt.legend()
-    # plt.title(f"I(x) for {z =:.4f}")
-    # plt.show()
+    # # I Test plot
+    plt.plot(x, np.real(I), label="I")
+    # plt.plot(x, np.imag(I), label="imag I")
+    plt.xlabel("x")
+    plt.ylabel("I")
+    plt.legend()
+    plt.title(f"I(x) for {z =:.4f}")
+    plt.show()
 
-    # # Φ Test plot
-    # plt.plot(x, np.real(Φ), label="Φ")
-    # plt.xlabel("x")
-    # plt.ylabel("Φ")
-    # plt.legend()
-    # plt.title(f"Φ(x) for {z =:.4f}")
-    # plt.show()
-    # ##########
+    # Φ Test plot
+    plt.plot(x, np.real(Φ), label="Φ")
+    plt.xlabel("x")
+    plt.ylabel("Φ")
+    plt.legend()
+    plt.title(f"Φ(x) for {z =:.4f}")
+    plt.show()
+    ##########
 
     # # ###########
     # ## PLAYING AROUND with δ ###
