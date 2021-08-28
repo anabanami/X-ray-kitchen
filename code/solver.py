@@ -29,8 +29,8 @@ def δ(x, z):
     # δ_array = np.zeros_like(x * z)
     # δ_array[(z - z_c) ** 2 + (x - x_c) ** 2 <= R ** 2] = δ0
 
-    # refractive index: δ0 within the cylinder decreasing to zero at the edges
-    # CDF inspired:
+    # refractive index: δ0 within the cylinder decreasing to zero at the edges.
+    # Sigmoid function inspired:
     r = np.sqrt(x**2 + z**2)
     𝜎 = 0.05 * mm
     δ_array = δ0 * (1 / (1 + np.exp((r - R) / 𝜎)))
