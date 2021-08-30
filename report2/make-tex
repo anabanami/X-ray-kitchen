@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# exit when a command fails
+set -o errexit
+
+
+TEXFILE=report2
+
+rm -f *.aux *.log *.bbl *.blg *.dvi *.fdb_latexmk *.fls
+
+# latexmk ${TEXFILE}
+pdflatex ${TEXFILE}
+bibtex ${TEXFILE}
+pdflatex ${TEXFILE}
+pdflatex ${TEXFILE}
+
+
+rm -f *.aux *.log *.bbl *.blg *.dvi *.fdb_latexmk *.fls
