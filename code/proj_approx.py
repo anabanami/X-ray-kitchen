@@ -70,8 +70,9 @@ def Runge_Kutta(z, delta_z, I, Φ):
 
 def globals():
     # x-array parameters
+    n_x = 2048
     x_max = 100 * mm
-    x = np.linspace(-x_max, x_max, 2048, endpoint=False)
+    x = np.linspace(-x_max, x_max, n_x, endpoint=False)
     delta_x = x[1] - x[0]
     n = x.size
 
@@ -89,7 +90,7 @@ def globals():
     k = 2 * np.pi * np.fft.fftfreq(n, delta_x)
 
 
-    return x, k0, R, z_c, x_c, k
+    return n_x, x, k0, R, z_c, x_c, k
 
 
 # -------------------------------------------------------------------------------- #
@@ -97,7 +98,7 @@ def globals():
 
 if __name__ == '__main__':
 
-    x, k0, R, z_c, x_c, k = globals()
+    n_x, x, k0, R, z_c, x_c, k = globals()
 
     # RK Propagation loop parameters
     i = 0
@@ -132,38 +133,59 @@ if __name__ == '__main__':
 
     ####################### PLOTS & TESTS #############################
     # Load file
-    I_list = np.load("I_list.npy") # np.shape(I_list) = (n_z / 10, n_x)
+    # I_list = np.load("I_list.npy") # np.shape(I_list) = (n_z / 10, n_x)
 
-    I = BLL(x)
-    dI_dz = TIE(z, I, Φ) 
+    # I = BLL(x)
+    # dI_dz = TIE(z, I, Φ) 
 
-    # dI_dz Test plot
-    plt.plot(x, dI_dz) # this looks like what I would expect the attenuation factor to look like
-    plt.xlabel("x")
-    plt.ylabel("dI_dz")
-    plt.title(r"TIE: $\frac{\partial I(x)}{\partial z}$ ")
-    plt.show()
+    # # dI_dz Test plot
+    # plt.plot(x, dI_dz) # this looks like what I would expect the attenuation factor to look like
+    # plt.xlabel("x")
+    # plt.ylabel("dI_dz")
+    # plt.title(r"TIE: $\frac{\partial I(x)}{\partial z}$ ")
+    # plt.show()
 
-    # I Test plot
-    plt.plot(x, I) # this looks like what I would expect the phase shift to look like
-    plt.xlabel("x")
-    plt.ylabel("I")
-    plt.title(r"Beer-Lamber law: $I(x)$ ")
-    plt.show()
+    # # I Test plot
+    # plt.plot(x, I) # this looks like what I would expect the phase shift to look like
+    # plt.xlabel("x")
+    # plt.ylabel("I")
+    # plt.title(r"Beer-Lamber law: $I(x)$ ")
+    # plt.show()
 
-    # PLOT ATTENUATION FACTOR I/I0 vs x after RK
-    plt.plot(x, I_list[1000] / I_0) # this looks like what I would expect the phase shift to look like
-    plt.xlabel("x")
-    plt.ylabel(r"$I(x)/I_{0}$")
-    plt.title(r"Attenuation factor: $I(x)/I_{0}$ ")
-    plt.show()
+    # # PLOT ATTENUATION FACTOR I/I0 vs x after RK
+    # plt.plot(x, I_list[1000] / I_0) # this looks like what I would expect the phase shift to look like
+    # plt.xlabel("x")
+    # plt.ylabel(r"$I(x)/I_{0}$")
+    # plt.title(r"Attenuation factor: $I(x)/I_{0}$ ")
+    # plt.show()
 
-    # PLOT Φ vs x
-    plt.plot(x, Φ)
-    plt.xlabel("x")
-    plt.ylabel(r"$\phi(x)$")
-    plt.title(r"Phase shift $\phi(x) = -k_{0} \int^{z_{0}}_{0} \delta(x, z) dz$ ")
-    plt.show()
+    # # PLOT Φ vs x
+    # plt.plot(x, Φ)
+    # plt.xlabel("x")
+    # plt.ylabel(r"$\phi(x)$")
+    # plt.title(r"Phase shift $\phi(x) = -k_{0} \int^{z_{0}}_{0} \delta(x, z) dz$ ")
+    # plt.show()
+
+    # test_list = np.arange(n_x)
+    # print(f"\n{np.shape(test_list) = }")
+    # print(f"\n{test_list = }")
+
+    # test_list = np.reshape(test_list, (n_x, 1))
+    # print(f"\n{np.shape(test_list) = }")
+    # print(f"\n{test_list = }")
+    
 
     # # TODO:
     # # PLOTS ATTENUATION FACTOR I/I0 vs x, z (2D)
+    n_y = 2000
+    I_list = np.load("I_list.npy") # np.shape(I_list) = (n_z / 10, n_x)
+    I = I_list[1000]
+    I_2D = np.broadcast_to(I, (n_y, n_x))
+
+    y = np.linspace(-100 * mm, 100 * mm, n_y, endpoint=False)
+    plt.imshow(I_2D / I_0, origin='lower')
+    plt.colorbar()
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.show()
+
