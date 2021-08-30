@@ -1,4 +1,6 @@
-psi_list.npy
 TIE_test.py
 cylinder_plot.py
-proj_approx.py
+I_list.npy
+intensity_x_y.npy
+phase_x_y.npy
+psi_list.npy

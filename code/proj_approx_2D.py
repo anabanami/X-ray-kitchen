@@ -180,17 +180,3 @@ if __name__ == '__main__':
     # plt.ylabel("y")
     # plt.show()
 
-    # # 1D plots I
-    print(f"{np.shape(I[:,-1]) = }")
-    
-    plt.plot(y, I[:,-1])
-    plt.xlabel("y")
-    plt.ylabel("I(y)")
-    plt.show()
-
-    print(f"{np.shape(I[-1,:]) = }")
-    
-    plt.plot(x, I[-1,:])
-    plt.xlabel("x")
-    plt.ylabel("I(x)")
-    plt.show()
