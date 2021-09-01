@@ -97,7 +97,7 @@ def finite_diff(z, I):
 
 def globals():
     # x-array parameters
-    n_all = 1024
+    n_all = 512
 
     n_x = n_all
     x_max = 10 * mm
