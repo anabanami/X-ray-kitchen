@@ -39,7 +39,7 @@ def μ(x, y, z):
 
 def phase(x, y):
     # phase gain as a function of the cylinder's refractive index
-    z = np.linspace(-2 * R, 2 * R, 1026, endpoint=False)
+    z = np.linspace(-2 * R, 2 * R, 1024, endpoint=False)
     dz = z[1] - z[0]
     # Euler's method
     Φ = np.zeros_like(x * y)
@@ -51,13 +51,13 @@ def phase(x, y):
 
 def BLL(x, y):
     # TIE IC of the intensity (z = z_0) a function of the cylinder's attenuation coefficient
-    z = np.linspace(-2 * R, 2 * R, 512, endpoint=False)
+    z = np.linspace(-2 * R, 2 * R, 1024, endpoint=False)
     dz = z[1] - z[0]
     # Euler's method
     F = np.zeros_like(x * y)
     for z_value in z:
         print(z_value)
-        F += - μ(x, y, z_value) * dz
+        F += μ(x, y, z_value) * dz
     I = np.exp(- F) * I_0
     return I # np.shape(I) = (n_y, n_x)
 
@@ -88,14 +88,14 @@ def globals():
     n_all = 512
 
     n_x = n_all
-    x_max = 100 * mm
+    x_max = 10 * mm
     x = np.linspace(-x_max, x_max, n_x, endpoint=False)
     delta_x = x[1] - x[0]
     size_x = x.size
 
     # y-array parameters
     n_y = n_all
-    y_max = 100 * mm
+    y_max = 10 * mm
     y = np.linspace(-y_max, y_max, n_y, endpoint=False).reshape(n_y, 1)
     delta_y = y[1] - y[0]
     size_y = y.size
@@ -125,14 +125,8 @@ if __name__ == '__main__':
 
     n_x, n_y, x, y, k0, R, z_c, x_c, h, kx, ky = globals()
 
-    # # RK Propagation loop parameters
-    # i = 0
-    # z = 0
-    # z_final = 100 * mm
-    # delta_z = 0.1 * mm  # (n_z = 1000)
-
     # #ICS
-    I_0 = np.ones_like(x * y)
+    # I_0 = np.ones_like(x * y)
     # Φ = phase(x, y)
     # np.save(f'phase_x_y.npy', Φ)
 
@@ -141,9 +135,14 @@ if __name__ == '__main__':
 
     ########################## RK LOOP ###############################
 
-
+    # # RK Propagation loop parameters
+    # i = 0
+    # z = 0
+    # z_final = 1000 * mm
+    # delta_z = 0.1 * mm  # (n_z = 10000)
+    
     # Φ = np.load("phase_x_y.npy")
-    # I = np.load("intensity_x_y.npy")
+    # I_0 = np.load("intensity_x_y.npy")
 
     # I_list = []
     # while z < z_final:
@@ -151,7 +150,7 @@ if __name__ == '__main__':
     #     print(f"{i = }")
 
     #     # spatial evolution step
-    #     I = Runge_Kutta(z, delta_z, I, Φ)
+    #     I = Runge_Kutta(z, delta_z, I_0, Φ)
     #     if not i % 10:
     #         I_list.append(I)
     #     i += 1
@@ -167,16 +166,39 @@ if __name__ == '__main__':
 
     # Load file
     I_list = np.load("I_list.npy")  # np.shape(I_list) = (n_z / 10, n_y,  n_x)
-    Φ = np.load("phase_x_y.npy")
-
-    # TODO:
-    # PLOTS ATTENUATION FACTOR I/I0 vs x, y (2D)
     I = I_list[-1,:, :]
     print(f"{np.shape(I) = }")
+    Φ = np.load("phase_x_y.npy")
 
-    # plt.imshow(I / I_0, origin='lower')
-    # plt.colorbar()
-    # plt.xlabel("x")
-    # plt.ylabel("y")
-    # plt.show()
 
+
+    # PLOT Phase contrast I in x, y
+    plt.imshow(I, origin='lower')
+    plt.colorbar()
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("Absorption profile")
+    plt.show()
+
+    # PLOT Phase contrast I in x, y
+    plt.imshow(Φ, origin='lower')
+    plt.colorbar()
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("Phase")
+    plt.show()
+
+    # PLOT Phase contrast I/I_0 in x, y
+    plt.imshow(I/I_0, origin='lower')
+    plt.colorbar()
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("I/I_0")
+    plt.show()
+
+    # PLOT I vs x (a single slice)
+    plt.plot(x, I[-1,:])
+    plt.xlabel("x")
+    plt.ylabel("I(x)")
+    plt.title("Intensity profile")
+    plt.show()
