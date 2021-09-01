@@ -12,7 +12,7 @@ plt.rcParams['figure.dpi'] = 150
 # functions
 
 def y_sigmoid(y):
-    𝜎 = 0.005 * mm
+    𝜎 = 0.004 * mm
     S = np.abs(1 / (1 + np.exp(-(y - h/2) / 𝜎)) - (1 / (1 + np.exp(-(y + h/2) / 𝜎))))
     return S # np.shape = (n_y, 1)
 
@@ -21,10 +21,8 @@ def δ(x, y, z):
     '''Refractive index: δ0 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
     δ0 = 462.8 * nm
-    # δ_array = np.zeros_like(x * y)
-    # δ_array[(z-z_c)**2 + (x - x_c)**2 <= R] = δ0
     r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
-    𝜎 = 0.005 * mm
+    𝜎 = 0.03 * mm
     δ_array = δ0 * (1 / (1 + np.exp((r - R) / 𝜎))) * y_sigmoid(y)
     return δ_array # np.shape(δ_array) = (n_y, n_x)
 
@@ -33,10 +31,8 @@ def μ(x, y, z):
     '''attenuation coefficient: μ0 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
     μ0 = 41.2 # per meter
-    # μ_array = np.zeros_like(x * y)
-    # μ_array[(z-z_c)**2 + (x - x_c)**2 <= R] = μ0
     r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
-    𝜎 = 0.1 * mm
+    𝜎 = 0.03 * mm
     μ_array = μ0 * (1 / (1 + np.exp((r - R) / 𝜎))) * y_sigmoid(y)
     return μ_array # np.shape(μ_array) = (n_y, n_x)
 
@@ -62,7 +58,7 @@ def BLL(x, y):
     for z_value in z:
         print(z_value)
         F += μ(x, y, z_value) * dz
-    I = np.exp(- F) * I_0
+    I = np.exp(- F) * I_initial
     return I # np.shape(I) = (n_y, n_x)
 
 
@@ -101,7 +97,7 @@ def finite_diff(z, I):
 
 def globals():
     # x-array parameters
-    n_all = 256
+    n_all = 1024
 
     n_x = n_all
     x_max = 10 * mm
@@ -141,24 +137,31 @@ if __name__ == '__main__':
 
     n_x, n_y, x, y, k0, R, z_c, x_c, h, kx, ky = globals()
 
-    #ICS
-    I_0 = np.ones_like(x * y)
+    # # ICS
+    I_initial = np.ones_like(x * y)
     Φ = phase(x, y)
-    np.save(f'phase_x_y.npy', Φ)
+    # np.save(f'phase_x_y.npy', Φ)
 
-    I = BLL(x, y)
-    np.save(f'intensity_x_y.npy', I)
+    I_0 = BLL(x, y)
+    # np.save(f'intensity_x_y.npy', I)
 
-    # ########################## RK LOOP ###############################
+    # # # ########################## RK LOOP ###############################
 
-    # Φ = np.load("phase_x_y.npy")
-    # I_0 = np.load("intensity_x_y.npy")
+    # PLOT I_0 in x, y
+    plt.imshow(I_0, origin='lower')
+    plt.colorbar()
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("I_0")
+    plt.show()
 
     # RK Propagation loop parameters
     i = 0
     z = 0
     z_final = 1000 * mm
-    delta_z = 0.1 * mm  # (n_z = 10000)
+    delta_z = 1 * mm  # (n_z = 1000)
+
+    I = I_0
 
     I_list = []
     while z < z_final:
@@ -166,7 +169,7 @@ if __name__ == '__main__':
         print(f"{i = }")
 
         # spatial evolution step
-        I = Runge_Kutta(z, delta_z, I_0, Φ)
+        I = Runge_Kutta(z, delta_z, I, Φ)
         if not i % 10:
             I_list.append(I)
         i += 1
@@ -175,47 +178,46 @@ if __name__ == '__main__':
     I_list = np.array(I_list)
     print(f"{np.shape(I_list) = }") #  np.shape(I_list) = (n_z / 10, n_x)
 
-    np.save(f'I_list.npy', I_list)
+    # np.save(f'I_list.npy', I_list)
 
 
-    ###################### PLOTS & TESTS #############################
-    # # # Finite Difference 1st order
-    # # finite_diff(z_final, I)
+    ##################### PLOTS & TESTS #############################
+    # # Finite Difference 1st order
+    # finite_diff(z_final, I)
 
     # # Load file
     # I_list = np.load("I_list.npy")  # np.shape(I_list) = (n_z / 10, n_y,  n_x)
-    # I = I_list[-1,:, :]
-    # print(f"{np.shape(I) = }")
+    I = I_list[-1,:, :]
     # Φ = np.load("phase_x_y.npy")
     # I_0 = np.load("intensity_x_y.npy")
 
-    # # PLOT Phase contrast I in x, y
-    # plt.imshow(I, origin='lower')
-    # plt.colorbar()
-    # plt.xlabel("x")
-    # plt.ylabel("y")
-    # plt.title("Absorption profile")
-    # plt.show()
+    # PLOT Phase contrast I in x, y
+    plt.imshow(I[50:-50], origin='lower')
+    plt.colorbar()
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("I")
+    plt.show()
 
-    # # PLOT Phase contrast I in x, y
-    # plt.imshow(Φ, origin='lower')
-    # plt.colorbar()
-    # plt.xlabel("x")
-    # plt.ylabel("y")
-    # plt.title("Phase")
-    # plt.show()
+    # PLOT Phase contrast I in x, y
+    plt.imshow(Φ, origin='lower')
+    plt.colorbar()
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("Phase")
+    plt.show()
 
-    # # PLOT I/I_0 in x, y
-    # plt.imshow(I/I_0, origin='lower')
-    # plt.colorbar()
-    # plt.xlabel("x")
-    # plt.ylabel("y")
-    # plt.title("I/I_0")
-    # plt.show()
+    # PLOT I/I_0 in x, y
+    plt.imshow(I/I_0, origin='lower')
+    plt.colorbar()
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("I/I_0")
+    plt.show()
 
-    # # PLOT I vs x (a single slice)
-    # plt.plot(x, I[-1,:])
-    # plt.xlabel("x")
-    # plt.ylabel("I(x)")
-    # plt.title("Intensity profile")
-    # plt.show()
+    # PLOT I vs x (a single slice)
+    plt.plot(x, I[np.int(n_y / 2),:])
+    plt.xlabel("x")
+    plt.ylabel("I(x)")
+    plt.title("Intensity profile")
+    plt.show()
