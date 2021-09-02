@@ -5,7 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import physunits
 from scipy.fft import fft, ifft, fft2, ifft2
-from physunits import m, cm, mm, nm
+from physunits import m, cm, mm, nm, J, kg, s
 
 plt.rcParams['figure.dpi'] = 150
 
@@ -13,14 +13,13 @@ plt.rcParams['figure.dpi'] = 150
 
 def y_sigmoid(y):
     𝜎 = 0.004 * mm
-    S = np.abs(1 / (1 + np.exp(-(y - h/2) / 𝜎)) - (1 / (1 + np.exp(-(y + h/2) / 𝜎))))
+    S = np.abs(1 / (1 + np.exp(-(y - height/2) / 𝜎)) - (1 / (1 + np.exp(-(y + height/2) / 𝜎))))
     return S # np.shape = (n_y, 1)
 
 
 def δ(x, y, z):
     '''Refractive index: δ0 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
-    δ0 = 462.8 * nm
     r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
     𝜎 = 0.03 * mm
     δ_array = δ0 * (1 / (1 + np.exp((r - R) / 𝜎))) * y_sigmoid(y)
@@ -30,7 +29,6 @@ def δ(x, y, z):
 def μ(x, y, z):
     '''attenuation coefficient: μ0 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
-    μ0 = 41.2 # per meter
     r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
     𝜎 = 0.03 * mm
     μ_array = μ0 * (1 / (1 + np.exp((r - R) / 𝜎))) * y_sigmoid(y)
@@ -90,71 +88,10 @@ def Runge_Kutta(z, delta_z, I, Φ):
 def finite_diff(z, I):
     # first order finite differences
     I_z = I + z * TIE(z, I, Φ)
-    plt.imshow(I_z, origin="lower")
-    plt.show()
     return I_z
 
 
-def globals():
-    # x-array parameters
-    n_all = 512
-
-    n_x = n_all
-    x_max = 10 * mm
-    x = np.linspace(-x_max, x_max, n_x, endpoint=False)
-    delta_x = x[1] - x[0]
-    size_x = x.size
-
-    # y-array parameters
-    n_y = n_all
-    y_max = 10 * mm
-    y = np.linspace(-y_max, y_max, n_y, endpoint=False).reshape(n_y, 1)
-    delta_y = y[1] - y[0]
-    size_y = y.size
-
-    # X-ray beam parameters
-    λ = 0.05166 * nm  # x-rays wavelength
-    k0 = 2 * np.pi / λ  # x-rays wavenumber
-
-    # Cylinder parameters
-    D = 12.75 * mm
-    R = D / 2
-    z_c = 0 * mm
-    x_c = 0 * mm
-    h = 20 * mm
-
-    # For Fourier space
-    kx = 2 * np.pi * np.fft.fftfreq(size_x, delta_x)
-    ky = 2 * np.pi * np.fft.fftfreq(size_y, delta_y).reshape(size_y, 1)
-
-    return n_x, n_y, x, y, k0, R, z_c, x_c, h, kx, ky
-
-
-# -------------------------------------------------------------------------------- #
-
-
-if __name__ == '__main__':
-
-    n_x, n_y, x, y, k0, R, z_c, x_c, h, kx, ky = globals()
-
-    # # ICS
-    I_initial = np.ones_like(x * y)
-    Φ = phase(x, y)
-    # np.save(f'phase_x_y.npy', Φ)
-
-    I_0 = BLL(x, y)
-    # np.save(f'intensity_x_y.npy', I)
-
-    # # # ########################## RK LOOP ###############################
-
-    # PLOT I_0 in x, y
-    plt.imshow(I_0, origin='lower')
-    plt.colorbar()
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.title("I_0")
-    plt.show()
-
+def propagation_loop(I_0, Φ):
     # RK Propagation loop parameters
     i = 0
     z = 0
@@ -179,26 +116,81 @@ if __name__ == '__main__':
     print(f"{np.shape(I_list) = }") #  np.shape(I_list) = (n_z / 10, n_x)
 
     # np.save(f'I_list.npy', I_list)
+    return I_list
 
+
+def globals():
+
+    # constants
+    h = 6.62607004e-34 * m**2 * kg / s
+    c = 299792458 * m / s
+
+    # x-array parameters
+    n_all = 512
+
+    n_x = n_all
+    x_max = 10 * mm
+    x = np.linspace(-x_max, x_max, n_x, endpoint=False)
+    delta_x = x[1] - x[0]
+    size_x = x.size
+
+    # y-array parameters
+    n_y = n_all
+    y_max = 10 * mm
+    y = np.linspace(-y_max, y_max, n_y, endpoint=False).reshape(n_y, 1)
+    delta_y = y[1] - y[0]
+    size_y = y.size
+
+    # Parameters as per energy_dispersion_Sim-1.py
+    # energy1 = 3.5509e-15 * J #  = 22.1629 * keV #- Ag k-alpha1
+    # δ0 = 468.141 * nm 
+    # μ0 = 64.38436 
+    # energy2 = 3.996e-15  * J # = 24.942 * keV # - Ag k-beta1
+    # δ0 = 369.763 *nm
+    # μ0 = 50.9387 
+
+    # λ = h * c / energy2
+    # k0 = 2 * np.pi / λ  # x-rays wavenumber
+    
+    # X-ray beam parameters
+    E = 3.845e-15 * J # (Beltran et al. 2010)
+    λ = h * c / E
+    k0 = 2 * np.pi / λ  # x-rays wavenumber
+
+    # # refraction and attenuation coefficients
+    δ0 = 462.8 * nm # (Beltran et al. 2010)
+    μ0 = 41.2 # per meter # (Beltran et al. 2010)
+
+    # Cylinder parameters
+    D = 12.75 * mm
+    R = D / 2
+    z_c = 0 * mm
+    x_c = 0 * mm
+    height = 20 * mm
+
+    # For Fourier space
+    kx = 2 * np.pi * np.fft.fftfreq(size_x, delta_x)
+    ky = 2 * np.pi * np.fft.fftfreq(size_y, delta_y).reshape(size_y, 1)
+
+    return n_x, n_y, x, y, k0, R, z_c, x_c, height, δ0, μ0, kx, ky
+
+
+# -------------------------------------------------------------------------------- #
+
+
+if __name__ == '__main__':
+
+    n_x, n_y, x, y, k0, R, z_c, x_c, height, δ0, μ0, kx, ky = globals()
+
+    # # ICS
+    I_initial = np.ones_like(x * y)
+
+    Φ = phase(x, y)
+    # np.save(f'phase_x_y.npy', Φ)
+    I_0 = BLL(x, y)
+    # np.save(f'intensity_x_y.npy', I)
 
     ##################### PLOTS & TESTS #############################
-    # # Finite Difference 1st order
-    # finite_diff(z_final, I)
-
-    # # Load file
-    # I_list = np.load("I_list.npy")  # np.shape(I_list) = (n_z / 10, n_y,  n_x)
-    I = I_list[-1,:, :]
-    # Φ = np.load("phase_x_y.npy")
-    # I_0 = np.load("intensity_x_y.npy")
-
-    # PLOT Phase contrast I in x, y
-    plt.imshow(I[50:-50], origin='lower')
-    plt.colorbar()
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.title("I")
-    plt.show()
-
     # PLOT Phase contrast I in x, y
     plt.imshow(Φ, origin='lower')
     plt.colorbar()
@@ -207,17 +199,45 @@ if __name__ == '__main__':
     plt.title("Phase")
     plt.show()
 
-    # PLOT I/I_0 in x, y
-    plt.imshow(I/I_0, origin='lower')
+    # PLOT I_0 in x, y
+    plt.imshow(I_0, origin='lower')
     plt.colorbar()
     plt.xlabel("x")
     plt.ylabel("y")
-    plt.title("I/I_0")
+    plt.title("I_0")
     plt.show()
 
-    # PLOT I vs x (a single slice)
-    plt.plot(x, I[np.int(n_y / 2),:])
+    # Finite differences 1st order
+    I_z = finite_diff(1 * m, I_0)
+    # PLOT I_z vs x (a single slice)
+    plt.plot(x, I_z[np.int(n_y / 2),:])
     plt.xlabel("x")
-    plt.ylabel("I(x)")
-    plt.title("Intensity profile")
+    plt.ylabel("I_z")
+    plt.title("Finite differences I(x)")
     plt.show()
+
+    # # Fourth order Runge-Kutta
+    # I_list = propagation_loop(I_0, Φ)
+
+    ##################### PLOTS & TESTS #############################
+
+    # # # Load file
+    # # I_list = np.load("I_list.npy")  # np.shape(I_list) = (n_z / 10, n_y,  n_x)
+    # I = I_list[-1,:, :]
+    # # Φ = np.load("phase_x_y.npy")
+    # # I_0 = np.load("intensity_x_y.npy")
+
+    # # PLOT Phase contrast I in x, y
+    # plt.imshow(I[50:-50], origin='lower')
+    # plt.colorbar()
+    # plt.xlabel("x")
+    # plt.ylabel("y")
+    # plt.title("I")
+    # plt.show()
+
+    # # PLOT I vs x (a single slice)
+    # plt.plot(x, I[np.int(n_y / 2),:])
+    # plt.xlabel("x")
+    # plt.ylabel("I(x)")
+    # plt.title("Intensity profile")
+    # plt.show()
