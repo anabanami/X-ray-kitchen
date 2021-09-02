@@ -21,7 +21,7 @@ def δ(x, y, z):
     '''Refractive index: δ0 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
     r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
-    𝜎 = 0.03 * mm
+    𝜎 = 0.005 * mm
     δ_array = δ0 * (1 / (1 + np.exp((r - R) / 𝜎))) * y_sigmoid(y)
     return δ_array # np.shape(δ_array) = (n_y, n_x)
 
@@ -30,7 +30,7 @@ def μ(x, y, z):
     '''attenuation coefficient: μ0 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
     r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
-    𝜎 = 0.03 * mm
+    𝜎 = 0.005 * mm
     μ_array = μ0 * (1 / (1 + np.exp((r - R) / 𝜎))) * y_sigmoid(y)
     return μ_array # np.shape(μ_array) = (n_y, n_x)
 
@@ -60,43 +60,49 @@ def BLL(x, y):
     return I # np.shape(I) = (n_y, n_x)
 
 
-def TIE(z, I, Φ):
+def gradΦ_laplacianΦ(Φ):
+    FT2D_Φ = fft2(Φ)
+    dΦ_dx = ifft2(1j * kx * FT2D_Φ)
+    dΦ_dy = ifft2(1j * ky * FT2D_Φ)
+    lap_Φ = ifft2(-(kx ** 2 + ky ** 2) * FT2D_Φ)
+    return dΦ_dx, dΦ_dy, lap_Φ
+
+
+def TIE(z, I):
     '''The intensity and phase evolution of a paraxial monochromatic
     scalar electromagnetic wave on propagation (2D)'''
     FT2D_I = fft2(I)
-    FT2D_Φ = fft2(Φ)
     dI_dz = (-1 / k0) * (
         np.real(
-            ifft2(1j * kx * FT2D_I) * ifft2(1j * kx * FT2D_Φ)
-            + ifft2(1j * ky * FT2D_I) * ifft2(1j * ky * FT2D_Φ)
-            + I * ifft2(-(kx ** 2 + ky ** 2) * FT2D_Φ)
+            ifft2(1j * kx * FT2D_I) * dΦ_dx
+            + ifft2(1j * ky * FT2D_I) * dΦ_dy
+            + I * lap_Φ
         )
     )
     return dI_dz  # np.shape(dI_dz) = (n_y, n_x)
 
-
-def Runge_Kutta(z, delta_z, I, Φ):
+def Runge_Kutta(z, delta_z, I):
     # spatial evolution 4th order RK
     # z is single value, delta_z is step
-    k1 = TIE(z, I, Φ)
-    k2 = TIE(z + delta_z / 2, I + k1 * delta_z / 2, Φ)
-    k3 = TIE(z + delta_z / 2, I + k2 * delta_z / 2, Φ)
-    k4 = TIE(z + delta_z, I + k3 * delta_z, Φ)    
+    k1 = TIE(z, I)
+    k2 = TIE(z + delta_z / 2, I + k1 * delta_z / 2)
+    k3 = TIE(z + delta_z / 2, I + k2 * delta_z / 2)
+    k4 = TIE(z + delta_z, I + k3 * delta_z)    
     return I + (delta_z / 6) * (k1 + 2 * k2 + 2 * k3 + k4)  # shape = (n_y, n_x)
 
 
 def finite_diff(z, I):
     # first order finite differences
-    I_z = I + z * TIE(z, I, Φ)
+    I_z = I + z * TIE(z, I)
     return I_z
 
 
-def propagation_loop(I_0, Φ):
+def propagation_loop(I_0):
     # RK Propagation loop parameters
     i = 0
     z = 0
     z_final = 1000 * mm
-    delta_z = 1 * mm  # (n_z = 1000)
+    delta_z = 10 * mm  # (n_z = 100)
 
     I = I_0
 
@@ -106,7 +112,7 @@ def propagation_loop(I_0, Φ):
         print(f"{i = }")
 
         # spatial evolution step
-        I = Runge_Kutta(z, delta_z, I, Φ)
+        I = Runge_Kutta(z, delta_z, I)
         if not i % 10:
             I_list.append(I)
         i += 1
@@ -115,9 +121,8 @@ def propagation_loop(I_0, Φ):
     I_list = np.array(I_list)
     print(f"{np.shape(I_list) = }") #  np.shape(I_list) = (n_z / 10, n_x)
 
-    # np.save(f'I_list.npy', I_list)
+    np.save(f'I_list.npy', I_list)
     return I_list
-
 
 def globals():
 
@@ -128,7 +133,7 @@ def globals():
     # x-array parameters
     n_all = 512
 
-    n_x = n_all
+    n_x = 2048
     x_max = 10 * mm
     x = np.linspace(-x_max, x_max, n_x, endpoint=False)
     delta_x = x[1] - x[0]
@@ -140,17 +145,6 @@ def globals():
     y = np.linspace(-y_max, y_max, n_y, endpoint=False).reshape(n_y, 1)
     delta_y = y[1] - y[0]
     size_y = y.size
-
-    # Parameters as per energy_dispersion_Sim-1.py
-    # energy1 = 3.5509e-15 * J #  = 22.1629 * keV #- Ag k-alpha1
-    # δ0 = 468.141 * nm 
-    # μ0 = 64.38436 
-    # energy2 = 3.996e-15  * J # = 24.942 * keV # - Ag k-beta1
-    # δ0 = 369.763 *nm
-    # μ0 = 50.9387 
-
-    # λ = h * c / energy2
-    # k0 = 2 * np.pi / λ  # x-rays wavenumber
     
     # X-ray beam parameters
     E = 3.845e-15 * J # (Beltran et al. 2010)
@@ -186,58 +180,33 @@ if __name__ == '__main__':
     I_initial = np.ones_like(x * y)
 
     Φ = phase(x, y)
-    # np.save(f'phase_x_y.npy', Φ)
+    np.save(f'phase_x_y.npy', Φ)
     I_0 = BLL(x, y)
-    # np.save(f'intensity_x_y.npy', I)
+    np.save(f'intensity_x_y.npy', I_0)
 
-    ##################### PLOTS & TESTS #############################
-    # PLOT Phase contrast I in x, y
-    plt.imshow(Φ, origin='lower')
-    plt.colorbar()
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.title("Phase")
-    plt.show()
-
-    # PLOT I_0 in x, y
-    plt.imshow(I_0, origin='lower')
-    plt.colorbar()
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.title("I_0")
-    plt.show()
-
-    # Finite differences 1st order
-    I_z = finite_diff(1 * m, I_0)
-    # PLOT I_z vs x (a single slice)
-    plt.plot(x, I_z[np.int(n_y / 2),:])
-    plt.xlabel("x")
-    plt.ylabel("I_z")
-    plt.title("Finite differences I(x)")
-    plt.show()
-
+    dΦ_dx, dΦ_dy, lap_Φ = gradΦ_laplacianΦ(Φ)
     # # Fourth order Runge-Kutta
-    # I_list = propagation_loop(I_0, Φ)
+    I_list = propagation_loop(I_0)
 
     ##################### PLOTS & TESTS #############################
 
     # # # Load file
-    # # I_list = np.load("I_list.npy")  # np.shape(I_list) = (n_z / 10, n_y,  n_x)
-    # I = I_list[-1,:, :]
-    # # Φ = np.load("phase_x_y.npy")
-    # # I_0 = np.load("intensity_x_y.npy")
+    I_list = np.load("I_list.npy")  # np.shape(I_list) = (n_z / 10, n_y,  n_x)
+    I = I_list[-1,:, :]
+    Φ = np.load("phase_x_y.npy")
+    I_0 = np.load("intensity_x_y.npy")
 
-    # # PLOT Phase contrast I in x, y
-    # plt.imshow(I[50:-50], origin='lower')
-    # plt.colorbar()
-    # plt.xlabel("x")
-    # plt.ylabel("y")
-    # plt.title("I")
-    # plt.show()
+    # PLOT Phase contrast I in x, y
+    plt.imshow(I[20:-20], origin='lower')
+    plt.colorbar()
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("I")
+    plt.show()
 
-    # # PLOT I vs x (a single slice)
-    # plt.plot(x, I[np.int(n_y / 2),:])
-    # plt.xlabel("x")
-    # plt.ylabel("I(x)")
-    # plt.title("Intensity profile")
-    # plt.show()
+    # PLOT I vs x (a single slice)
+    plt.plot(x, I[np.int(n_y / 2),:])
+    plt.xlabel("x")
+    plt.ylabel("I(x)")
+    plt.title("Intensity profile")
+    plt.show()
