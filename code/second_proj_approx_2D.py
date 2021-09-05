@@ -16,19 +16,19 @@ def y_sigmoid(y):
     return S # np.shape = (n_y, 1)
 
 
-def δ(x, y, z):
-    '''Refractive index: δ0 within the cylinder 
+def δ(x, y, z, δ1, δ2):
+    '''Refractive index: δ1 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
     r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
-    δ_array = δ0 * (1 / (1 + np.exp((r - R) / 𝜎_x))) * y_sigmoid(y)
+    δ_array = (δ1 * (1 / (1 + np.exp((r - R) / 𝜎_x))) + (δ2 - δ1) * (1 / (1 + np.exp((r - R) / 𝜎_x)))) * y_sigmoid(y)
     return δ_array # np.shape(δ_array) = (n_y, n_x)
 
 
-def μ(x, y, z):
-    '''attenuation coefficient: μ0 within the cylinder 
+def μ(x, y, z, μ1, μ2):
+    '''attenuation coefficient: μ1 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
     r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
-    μ_array = μ0 * (1 / (1 + np.exp((r - R) / 𝜎_x))) * y_sigmoid(y)
+    μ_array = (μ1 * (1 / (1 + np.exp((r - R) / 𝜎_x))) + (μ2 - μ1) * (1 / (1 + np.exp((r - R) / 𝜎_x)))) * y_sigmoid(y)
     return μ_array # np.shape(μ_array) = (n_y, n_x)
 
 
@@ -40,7 +40,7 @@ def phase(x, y):
     Φ = np.zeros_like(x * y)
     for z_value in z:
         print(z_value)
-        Φ += -k0 * δ(x, y, z_value) * dz
+        Φ += -k0 * δ(x, y, z_value, δ1, δ2) * dz
     return Φ # np.shape(Φ) = (n_y, n_x)
 
 
@@ -52,7 +52,7 @@ def BLL(x, y):
     F = np.zeros_like(x * y)
     for z_value in z:
         print(z_value)
-        F += μ(x, y, z_value) * dz
+        F += μ(x, y, z_value, μ1, μ2)* dz
     I = np.exp(- F) * I_initial
     return I # np.shape(I) = (n_y, n_x)
 
@@ -103,9 +103,7 @@ def propagation_loop(I_0):
     I = I_0
     I_list = []
     while z < z_final:
-
         print(f"{i = }")
-
         # spatial evolution step
         I = Runge_Kutta(z, delta_z, I)
         if not i % 10:
@@ -136,7 +134,6 @@ def plot_I(I):
 
 
 def globals():
-
     # constants
     h = 6.62607004e-34 * m**2 * kg / s
     c = 299792458 * m / s
@@ -155,25 +152,49 @@ def globals():
     y = np.linspace(-y_max, y_max, n_y, endpoint=False)#.reshape(n_y, 1)
     delta_y = y[1] - y[0]
     y = y.reshape(n_y, 1)
-    
-    # X-ray beam parameters
+
+    # # X-ray beam parameters
     E = 3.845e-15 * J # (Beltran et al. 2010)
     λ = h * c / E
     k0 = 2 * np.pi / λ  # x-rays wavenumber
-
     # # refraction and attenuation coefficients
-    δ0 = 462.8 * nm # (Beltran et al. 2010)
-    μ0 = 41.2 # per meter # (Beltran et al. 2010)
+    δ1 = 462.8 * nm # PMMA (Beltran et al. 2010)
+    μ1 = 41.2 # per meter # PMMA (Beltran et al. 2010)
+    δ2 = 939.6 * nm # Aluminium (Beltran et al. 2010)
+    μ2 = 502.6 # per meter # Aluminium (Beltran et al. 2010)
 
-    # Cylinder parameters
-    D = 12.75 * mm
-    R = D / 2
-    z_c = 0 * mm
-    x_c = 0 * mm
-    height = 20 * mm
+    # # Parameters as per energy_dispersion_Sim-1.py (MK's code)
+    # energy1 = 3.5509e-15 * J #  = 22.1629 * keV #- Ag k-alpha1
+    # δ1 = 468.141 * nm 
+    # μ1 = 64.38436 
+    # δ2 = 0
+    # μ2 = 0
+    # λ = h * c / energy1
+    # energy2 = 3.996e-15  * J # = 24.942 * keV # - Ag k-beta1
+    # δ1 = 369.763 *nm
+    # μ1 = 50.9387 
+    # δ2 = 0
+    # μ2 = 0
+    # λ = h * c / energy2
+
+    k0 = 2 * np.pi / λ  # x-rays wavenumber
+
+    # Blurring 
     𝜎_x = 0.001 * mm
 
-    return x, y, n_x, n_y, delta_x, delta_y, k0, R, z_c, x_c, δ0, μ0, height, 𝜎_x
+    # Cylinder1 parameters
+    D = 12.75 * mm
+    R = D / 2
+
+    # Cylinder2 parameters
+    D2 = 6 * mm
+    R2 = D2 / 2
+
+    z_c = 0 * mm
+    x_c = 0 * mm
+    height = 20 * mm # change to 10mm
+
+    return x, y, n_x, n_y, delta_x, delta_y, k0, R, R2, z_c, x_c, δ1, μ1, δ2, μ2, 𝜎_x, height
 
 
 # -------------------------------------------------------------------------------- #
@@ -181,24 +202,21 @@ def globals():
 
 if __name__ == '__main__':
 
-    x, y, n_x, n_y, delta_x, delta_y, k0, R, z_c, x_c, δ0, μ0, height, 𝜎_x = globals()
+    x, y, n_x, n_y, delta_x, delta_y, k0, R, R2, z_c, x_c, δ1, μ1, δ2, μ2, 𝜎_x, height = globals()
 
     # # ICS
-    Φ = phase(x, y)
     I_initial = np.ones_like(x * y)
+
+    Φ = phase(x, y)
     I_0 = BLL(x, y)
 
     # Φ derivatives 
     dΦ_dx, dΦ_dy, lap_Φ = gradΦ_laplacianΦ(Φ)
+
     # # Fourth order Runge-Kutta
-    I_list = propagation_loop(I_0)
+    I_list = propagation_loop(I_0) # np.shape(I_list) = (n_z / 10, n_y,  n_x)
 
     ##################### PLOTS & TESTS #############################
 
-    I_list = np.load("I_list.npy")  # np.shape(I_list) = (n_z / 10, n_y,  n_x)
     I = I_list[-1,:, :]
-    plot_I((I)
-
-    # # # First order finite differences
-    # I_z = finite_diff(1 * m, I_0)
-    # plot(I_z)
+    plot_I(I)

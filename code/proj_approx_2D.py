@@ -37,7 +37,7 @@ def μ(x, y, z):
 
 def phase(x, y):
     # phase gain as a function of the cylinder's refractive index
-    z = np.linspace(-2 * R, 2 * R, 2 ** 8 * 256, endpoint=False)
+    z = np.linspace(-2 * R, 2 * R, 65536, endpoint=False)
     dz = z[1] - z[0]
     # Euler's method
     Φ = np.zeros_like(x * y)
@@ -49,7 +49,7 @@ def phase(x, y):
 
 def BLL(x, y):
     # TIE IC of the intensity (z = z_0) a function of the cylinder's attenuation coefficient
-    z = np.linspace(-2 * R, 2 * R, 2 ** 8 * 256, endpoint=False)
+    z = np.linspace(-2 * R, 2 * R, 65536, endpoint=False)
     dz = z[1] - z[0]
     # Euler's method
     F = np.zeros_like(x * y)
@@ -146,15 +146,27 @@ def globals():
     y = np.linspace(-y_max, y_max, n_y, endpoint=False).reshape(n_y, 1)
     delta_y = y[1] - y[0]
     size_y = y.size
-    
-    # X-ray beam parameters
-    E = 3.845e-15 * J # (Beltran et al. 2010)
-    λ = h * c / E
-    k0 = 2 * np.pi / λ  # x-rays wavenumber
 
-    # # refraction and attenuation coefficients
-    δ0 = 462.8 * nm # (Beltran et al. 2010)
-    μ0 = 41.2 # per meter # (Beltran et al. 2010)
+    # # # refraction and attenuation coefficients (Beltran et al. 2010)
+    # δ0 = 462.8 * nm 
+    # μ0 = 41.2 # per meter 
+    # # # X-ray beam parameters
+    # E = 3.845e-15 * J 
+    # λ = h * c / E
+    # k0 = 2 * np.pi / λ  # x-rays wavenumber
+
+    #Parameters as per energy_dispersion_Sim-1.py
+    energy1 = 3.5509e-15 * J #  = 22.1629 * keV #- Ag k-alpha1
+    δ0 = 468.141 * nm 
+    μ0 = 64.38436 
+    λ = h * c / energy1
+
+    # energy2 = 3.996e-15  * J # = 24.942 * keV # - Ag k-beta1
+    # δ0 = 369.763 *nm
+    # μ0 = 50.9387 
+    # λ = h * c / energy2
+
+    k0 = 2 * np.pi / λ  # x-rays wavenumber
 
     # Cylinder parameters
     D = 12.75 * mm
