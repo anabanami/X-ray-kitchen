@@ -180,7 +180,7 @@ def globals():
     k0 = 2 * np.pi / λ  # x-rays wavenumber
 
     # Blurring 
-    𝜎_x = 0.001 * mm
+    𝜎_x = 0.0027 * mm
 
     # Cylinder1 parameters
     D = 12.75 * mm
@@ -220,3 +220,6 @@ if __name__ == '__main__':
 
     I = I_list[-1,:, :]
     plot_I(I)
+
+    # I_z = finite_diff(1 * m, I_0)
+    # plot_I(I_z)
