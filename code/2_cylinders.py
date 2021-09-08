@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from scipy.ndimage.filters import laplace
 from scipy.fft import fft2, ifft2
 from physunits import m, cm, mm, nm, J, kg, s
+from scipy import integrate
 
 plt.rcParams['figure.dpi'] = 150
 
@@ -35,27 +35,21 @@ def μ(x, y, z, μ1):#, μ2):
 
 def phase(x, y):
     # phase gain as a function of the cylinder's refractive index
-    z = np.linspace(-2 * R, 2 * R, 65536, endpoint=False)
-    dz = z[1] - z[0]
-    # Euler's method
     Φ = np.zeros_like(x * y)
-    for z_value in z:
-        print(z_value)
-        # Φ += -k0 * δ(x, y, z_value, δ1, δ2) * dz
-        Φ += -k0 * δ(x, y, z_value, δ1) * dz
+    for i, y_val in enumerate(y):
+        for j, x_val in enumerate(x):
+            Φ[i, j] = -k0 * integrate.quad(lambda z: δ(x_val, y_val, z, δ1),-2 * R, 2 * R)[0] #, δ2)
+            print(f"{Φ[i, j]}")
     return Φ # np.shape(Φ) = (n_y, n_x)
 
 
 def BLL(x, y):
     # TIE IC of the intensity (z = z_0) a function of the cylinder's attenuation coefficient
-    z = np.linspace(-2 * R, 2 * R, 65536, endpoint=False)
-    dz = z[1] - z[0]
-    # Euler's method
     F = np.zeros_like(x * y)
-    for z_value in z:
-        print(z_value)
-        # F += μ(x, y, z_value, μ1, μ2)* dz
-        F += μ(x, y, z_value, μ1)* dz
+    for i, y_val in enumerate(y):
+        for j, x_val in enumerate(x):
+            F[i, j] = integrate.quad(lambda z: μ(x_val, y_val, z, μ1),-2 * R, 2 * R)[0] #, μ2)
+            print(f"{F[i, j]}")
     I = np.exp(- F) * I_initial
     return I # np.shape(I) = (n_y, n_x)
 
@@ -70,12 +64,12 @@ def Angular_spectrum(z, field):
 
 def plots_I(I):
     # # PLOT Phase contrast I in x, y
-    plt.imshow(I, origin='lower')
-    plt.colorbar()
-    plt.xlabel("x")
-    plt.ylabel("y")
-    plt.title("I")
-    plt.show()
+    # plt.imshow(I, origin='lower')
+    # plt.colorbar()
+    # plt.xlabel("x")
+    # plt.ylabel("y")
+    # plt.title("I")
+    # plt.show()
 
     # # PLOT I vs x (a single slice)
     plt.plot(x, I[np.int(n_y / 2),:])
@@ -98,36 +92,22 @@ def globals():
     x = np.linspace(-x_max, x_max, n_x, endpoint=False)
     delta_x = x[1] - x[0]
     # # y-array parameters
-    n_y = n
+
+    n_y = 20 # n
     y_max = 10 * mm
     y = np.linspace(-y_max, y_max, n_y, endpoint=False)#.reshape(n_y, 1)
     delta_y = y[1] - y[0]
     y = y.reshape(n_y, 1)
 
-    # # # X-ray beam parameters
-    # # # (Beltran et al. 2010)
-    # E = 3.845e-15 * J 
-    # λ = h * c / E
-    # # # refraction and attenuation coefficients
-    # δ1 = 462.8 * nm # PMMA
-    # μ1 = 41.2 # per meter # PMMA
+    # # X-ray beam parameters
+    # # (Beltran et al. 2010)
+    E = 3.845e-15 * J 
+    λ = h * c / E
+    # # refraction and attenuation coefficients
+    δ1 = 462.8 * nm # PMMA
+    μ1 = 41.2 # per meter # PMMA
     # δ2 = 939.6 * nm # Aluminium
     # μ2 = 502.6 # per meter # Aluminium
-
-    # # # energy_dispersion_Sim-1.py (MK's code)
-    energy1 = 3.5509e-15 * J #  = 22.1629 * keV #- Ag k-alpha1
-    δ1 = 468.141 * nm 
-    μ1 = 64.38436 
-    # δ2 = 0
-    # μ2 = 0
-    λ = h * c / energy1
-    # # # MK's secondary parameters
-    # energy2 = 3.996e-15  * J # = 24.942 * keV # - Ag k-beta1
-    # δ1 = 369.763 *nm
-    # μ1 = 50.9387 
-    # δ2 = 0
-    # μ2 = 0
-    # λ = h * c / energy2
 
     # wave number
     k0 = 2 * np.pi / λ  # x-rays wavenumber
@@ -169,7 +149,7 @@ if __name__ == '__main__':
 
     Ψ_0 = np.sqrt(I_0) * np.exp(1j*Φ)
 
-    z_final = 1 * m
+    z_final = 20 * cm
     Ψ = Angular_spectrum(z_final, Ψ_0)
     I = np.abs(Ψ**2)
 
