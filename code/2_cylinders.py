@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from scipy.fft import fft2, ifft2
-from physunits import m, cm, mm, nm, um, J, kg, s, eV
+from physunits import m, cm, mm, nm, um
 import scipy.constants as const
 import xri
 from scipy.ndimage import gaussian_filter
@@ -11,38 +11,30 @@ plt.rcParams['figure.dpi'] = 150
 
 # functions
 
-def thicc(x, y):
+def thicc(x, y, R):
     # # Create cylindrical object projected thickness
     T = np.zeros_like(x * y)
     T[0:20,0:100] = 1
-    T = 2 * np.sqrt(R1 ** 2 - x ** 2) #+ 2 * np.sqrt(R2 ** 2 - x ** 2)
+    T = 2 * np.sqrt(R ** 2 - x ** 2)
     T = np.nan_to_num(T)
     T = gaussian_filter(T, sigma=2)
     ones_y=np.ones_like(y)
     # # Expand 1D to 2D with outer product
     T = np.outer(ones_y, T)
     # im = plt.imshow(T)
-    # plt.colorbar()
-    # plt.show()
-    # ass
     return T
 
+def plots_I(I):
 
-# def phase(x, y, δ):
-#     # phase gain as a function of the cylinder's refractive index
-#     Φ = - k0 * δ * thicc(x, y)
-#     return Φ # np.shape(Φ) = (n_y, n_x)
+    plt.imshow(I, origin='lower')
+    plt.colorbar()
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.title("I(x, y)")
+    plt.show()
 
-
-# def BLL(x, y, μ):
-#     # IC of the intensity (z = z_0) a function of the cylinder's attenuation coefficient
-#     I = np.exp(- μ * thicc(x, y)) * I_initial
-#     return I # np.shape(I) = (n_y, n_x)
-
-
-def plot_I(I):
     # # PLOT I vs x (a single slice)
-    plt.plot(I)
+    plt.plot(x, I[900])
     plt.xlabel("x")
     plt.ylabel("I(x)")
     plt.title("Intensity profile")
@@ -69,36 +61,19 @@ def globals():
     delta_y = y[1] - y[0]
     y = y.reshape(n_y, 1)
 
-    # # X-ray beam parameters
-    # # (Beltran et al. 2010)
-    E0 = 24 # keV 
-    λ = h * c / E0
-    k0 = 2 * np.pi / λ  # x-rays wavenumber
+    # Parameters from X-ray attenuation calculator   
+    E1 = 22.1629 # keV # Ag k-alpha1 
+    λ = h * c / (E1 * 1000 * const.eV)
+    k1 = 2 * np.pi / λ  # x-rays wavenumber
+    # Material = water, density = 1 g/cm**3
+    δ1 = 469.337 * nm
+    μ1 = 64.55083 # per cm
+    β1 = μ1 / (2 * k1)
+    # Material = ice, density = 0.92 g/cm**3
+    δ2 = 431.790 * nm
+    μ2 = 59.38677 # per cm
+    β2 = μ2 / (2 * k1)
 
-    # # refraction and attenuation coefficients
-    δ1 = 462.8 * nm # PMMA
-    μ1 = 41.2 # per meter # PMMA
-    β1 = μ1 / (2 * k0)
-    δ2 = 939.6 * nm # Aluminium
-    μ2 = 502.6 # per meter # Aluminium
-    β2 = μ2 / (2 * k0)
-
-    # # Parameters from Energy_Dispersion_Sim-1.py
-    # # Material = water
-    # E1 = 22.1629 # keV # Ag k-alpha1 
-    # λ = h * c / (E1 * 1000 * const.eV)
-    # k1 = 2 * np.pi / λ  # x-rays wavenumber
-    # δ1 = 468.141 * nm
-    # μ1 = 64.38436 # per meter
-    # β1 = μ1 / (2 * k1)
-
-    # E2 = 24.942 # keV - Ag k-beta1
-    # λ2 = h * c / E2
-    # k2 = 2 * np.pi / λ2  # x-rays wavenumber
-    # δ2 = 3.69763e-07
-    # μ2 = 50.9387
-
-    # β2 = μ2 / (2 * k0)
 
     # For Fourier space
     kx = 2 * np.pi * np.fft.fftfreq(n_x, delta_x)
@@ -114,10 +89,10 @@ def globals():
 
     z_c = 0 * mm
     x_c = 0 * mm
-    height = 10 * mm # change to 10mm?
+    height = 10 * mm
 
 
-    return x, y, n_x, n_y, delta_x, delta_y, E0, k0, kx, ky, R1, R2, z_c, x_c, δ1, μ1, β1, δ2, μ2, β2,  height
+    return x, y, n_x, n_y, delta_x, delta_y, E1, k1, kx, ky, R1, R2, z_c, x_c, δ1, μ1, β1, δ2, μ2, β2, height 
 
 
 # -------------------------------------------------------------------------------- #
@@ -125,26 +100,20 @@ def globals():
 
 if __name__ == '__main__':
 
-    x, y, n_x, n_y, delta_x, delta_y, E0, k0, kx, ky, R1, R2, z_c, x_c, δ1, μ1, β1, δ2, μ2, β2,  height = globals()
+    x, y, n_x, n_y, delta_x, delta_y, E1, k1, kx, ky, R1, R2, z_c, x_c, δ1, μ1, β1, δ2, μ2, β2, height = globals()
 
     z_final = 1 * m
 
-    T = thicc(x, y)
+    T1 = thicc(x, y, R1)
+    T2 = thicc(x, y, R2)
+    δT1 = δ1 * T1
+    βT1 = β1 * T1
+    δT2 = δ2 * T2
+    βT2 = β2 * T2
+    two_cylinders_δT = δT1 + (δ2 - δ1) * T2
+    two_cylinders_βT = βT1 + (β2 - β1) * T2  
 
-    δ1T = δ1 * T
-    β1T = β1 * T
-
-    Prop1 = xri.sim.propAS(δ1T, β1T, E0, z_final, delta_x, supersample=3)
-    # Prop2 = xri.sim.propAS(δ2*T, β2*T, E0, z_final, delta_x, supersample=3)
-
-    # # # PLOT Phase contrast I in x, y
-    # plt.imshow(Prop1, origin='lower')
-    # plt.colorbar()
-    # plt.xlabel("x")
-    # plt.ylabel("y")
-    # plt.title("I(x, y)")
-    # plt.show()
-
-    I = Prop1[900]
-    print(f"{I = }")
-    plot_I(I)
+    # I = xri.sim.propAS(δT1, βT1, E1, z_final, delta_x, supersample=3)
+    # I = xri.sim.propAS(δT2, βT2, E1, z_final, delta_x, supersample=3)
+    I = xri.sim.propAS(two_cylinders_δT, two_cylinders_βT, E1, z_final, delta_x, supersample=3)
+    plots_I(I)
