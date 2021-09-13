@@ -61,11 +61,10 @@ def globals():
     delta_y = y[1] - y[0]
     y = y.reshape(n_y, 1)
 
-    # Parameters from X-ray attenuation calculator   
-    E1 = 22.1629 # keV # Ag k-alpha1 
-    λ = h * c / (E1 * 1000 * const.eV)
-    k1 = 2 * np.pi / λ  # x-rays wavenumber
-
+    # # Parameters from X-ray attenuation calculator   
+    # E1 = 22.1629 # keV # Ag k-alpha1 
+    # λ = h * c / (E1 * 1000 * const.eV)
+    # k1 = 2 * np.pi / λ  # x-rays wavenumber
     # # Material = water, density = 1 g/cm**3
     # δ1 = 469.337 * nm
     # μ1 = 64.55083 # per m
@@ -75,26 +74,19 @@ def globals():
     # μ2 = 59.38677 # per m
     # β2 = μ2 / (2 * k1)
 
-
-    # # Brain parameters from X-ray attenuation calculator
-    # # Material = Brain, density = 1.03 g/cm**3
-    # δ1 = 482.584 * nm
-    # μ1 = 68.29402 # per m
-    # β1 = μ1 / (2 * k1)
+    # Parameters Linda's data   
+    E1 = 24 # keV
+    λ = h * c / (E1 * 1000 * const.eV)
+    k1 = 2 * np.pi / λ  # x-rays wavenumber
 
     # # Material = gray matter, density = ? g/cm**3
-    # δ1 = 16.1 * nm # ?
-    # μ1 = 68 # per m
-    # β1 = μ1 / (2 * k1)
-    # Material = white matter, density = ? g/cm**3
-    δ2 = 16.1 * nm
-    μ2 = 66 # per m
+    δ1 = (52 / 56) * 16.1 * nm # ?
+    μ1 =  52 # per m
+    β1 = μ1 / (2 * k1)
+    # # Material = white matter, density = ? g/cm**3
+    δ2 = 16.1 * nm # ?
+    μ2 = 56 # per m
     β2 = μ2 / (2 * k1)
-    # # Material = other, density = ? g/cm**3
-    # δ3 = -2.837
-    # μ3 =  ?? # per cm
-    # β3 = μ3 / (2 * k1)
-
 
     # For Fourier space
     kx = 2 * np.pi * np.fft.fftfreq(n_x, delta_x)
@@ -123,7 +115,7 @@ if __name__ == '__main__':
 
     x, y, n_x, n_y, delta_x, delta_y, E1, k1, kx, ky, R1, R2, z_c, x_c, δ1, μ1, β1, δ2, μ2, β2, height = globals()
 
-    z_final = 1 * m
+    z_final = 2.5 * m
 
     T1 = thicc(x, y, R1)
     T2 = thicc(x, y, R2)
