@@ -17,7 +17,7 @@ def thicc(x, y, R):
     T[0:20,0:100] = 1
     T = 2 * np.sqrt(R ** 2 - x ** 2)
     T = np.nan_to_num(T)
-    T = gaussian_filter(T, sigma=2)
+    T = gaussian_filter(T, sigma=3)
     ones_y=np.ones_like(y)
     # # Expand 1D to 2D with outer product
     T = np.outer(ones_y, T)
@@ -74,17 +74,31 @@ def globals():
     # μ2 = 59.38677 # per m
     # β2 = μ2 / (2 * k1)
 
-    # Parameters Linda's data   
+    # # Pessimistic case  
+    # E1 = 24 # keV
+    # λ = h * c / (E1 * 1000 * const.eV)
+    # k1 = 2 * np.pi / λ  # x-rays wavenumber
+
+    # # # Material = gray matter, density = 1.045 g/cm**3
+    # δ1 = 413.45 * nm
+    # μ1 =  58.2978 # per m
+    # β1 = μ1 / (2 * k1)
+    # # # Material = white matter, density = 1.041 g/cm**3
+    # δ2 = 411.87 * nm
+    # μ2 = 58.0747 # per m
+    # β2 = μ2 / (2 * k1)
+
+    # Optimistic case 
     E1 = 24 # keV
     λ = h * c / (E1 * 1000 * const.eV)
     k1 = 2 * np.pi / λ  # x-rays wavenumber
 
     # # Material = gray matter, density = ? g/cm**3
-    δ1 = (52 / 56) * 16.1 * nm # ?
+    δ1 = 459.1 * nm
     μ1 =  52 # per m
     β1 = μ1 / (2 * k1)
     # # Material = white matter, density = ? g/cm**3
-    δ2 = 16.1 * nm # ?
+    δ2 = 426.31 * nm
     μ2 = 56 # per m
     β2 = μ2 / (2 * k1)
 
