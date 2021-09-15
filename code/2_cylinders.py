@@ -6,6 +6,7 @@ from physunits import m, cm, mm, nm, um
 import scipy.constants as const
 import xri
 from scipy.ndimage import gaussian_filter
+from scipy.ndimage import zoom
 
 plt.rcParams['figure.dpi'] = 150
 
@@ -24,7 +25,7 @@ def thicc(x, y, R):
     # im = plt.imshow(T)
     return T
 
-def plots_I(I):
+def plots_I(x, I):
 
     plt.imshow(I, origin='lower')
     plt.colorbar()
@@ -54,10 +55,9 @@ def globals():
     x = np.linspace(-x_max, x_max, n_x, endpoint=False)
     delta_x = x[1] - x[0]
     # # y-array parameters
-
     n_y = n
     y_max = (n_y / 2) * 5 * um
-    y = np.linspace(-y_max, y_max, n_y, endpoint=False)#.reshape(n_y, 1)
+    y = np.linspace(-y_max, y_max, n_y, endpoint=False)
     delta_y = y[1] - y[0]
     y = y.reshape(n_y, 1)
 
@@ -72,20 +72,6 @@ def globals():
     # # Material = ice, density = 0.92 g/cm**3
     # δ2 = 431.790 * nm
     # μ2 = 59.38677 # per m
-    # β2 = μ2 / (2 * k1)
-
-    # # Pessimistic case  
-    # E1 = 24 # keV
-    # λ = h * c / (E1 * 1000 * const.eV)
-    # k1 = 2 * np.pi / λ  # x-rays wavenumber
-
-    # # # Material = gray matter, density = 1.045 g/cm**3
-    # δ1 = 413.45 * nm
-    # μ1 =  58.2978 # per m
-    # β1 = μ1 / (2 * k1)
-    # # # Material = white matter, density = 1.041 g/cm**3
-    # δ2 = 411.87 * nm
-    # μ2 = 58.0747 # per m
     # β2 = μ2 / (2 * k1)
 
     # Optimistic case 
@@ -129,7 +115,7 @@ if __name__ == '__main__':
 
     x, y, n_x, n_y, delta_x, delta_y, E1, k1, kx, ky, R1, R2, z_c, x_c, δ1, μ1, β1, δ2, μ2, β2, height = globals()
 
-    z_final = 2.5 * m
+    z_final =  5 * m
 
     T1 = thicc(x, y, R1)
     T2 = thicc(x, y, R2)
@@ -143,4 +129,8 @@ if __name__ == '__main__':
     # I = xri.sim.propAS(δT1, βT1, E1, z_final, delta_x, supersample=3)
     # I = xri.sim.propAS(δT2, βT2, E1, z_final, delta_x, supersample=3)
     I = xri.sim.propAS(two_cylinders_δT, two_cylinders_βT, E1, z_final, delta_x, supersample=3)
-    plots_I(I)
+
+    # Re-bin step each pixel should now be 20um
+    I = zoom(I, 4.0, order=3)
+    x = zoom(x, 4.0, order=3)
+    plots_I(x, I)

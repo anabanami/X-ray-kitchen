@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import laplace
-from physunits import m, cm, mm, nm, J, kg, s
+import scipy.constants as const
+from physunits import m, cm, mm, nm, um, keV
 
 plt.rcParams['figure.dpi'] = 150
 
@@ -16,7 +17,7 @@ def y_sigmoid(y):
     return S # np.shape = (n_y, 1)
 
 
-def δ(x, y, z, δ1, δ2):
+def δ(x, y, z, δ1):
     '''Refractive index: δ1 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
     r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
@@ -24,7 +25,7 @@ def δ(x, y, z, δ1, δ2):
     return δ_array # np.shape(δ_array) = (n_y, n_x)
 
 
-def μ(x, y, z, μ1, μ2):
+def μ(x, y, z, μ1):
     '''attenuation coefficient: μ1 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
     r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
@@ -40,7 +41,7 @@ def phase(x, y):
     Φ = np.zeros_like(x * y)
     for z_value in z:
         print(z_value)
-        Φ += -k0 * δ(x, y, z_value, δ1, δ2) * dz
+        Φ += -k0 * δ(x, y, z_value, δ1) * dz
     return Φ # np.shape(Φ) = (n_y, n_x)
 
 
@@ -52,7 +53,7 @@ def BLL(x, y):
     F = np.zeros_like(x * y)
     for z_value in z:
         print(z_value)
-        F += μ(x, y, z_value, μ1, μ2)* dz
+        F += μ(x, y, z_value, μ1)* dz
     I = np.exp(- F) * I_initial
     return I # np.shape(I) = (n_y, n_x)
 
@@ -97,7 +98,7 @@ def propagation_loop(I_0):
     # RK Propagation loop parameters
     i = 0
     z = 0
-    z_final = 1000 * mm
+    z_final = 1 * m
     delta_z = 1 * mm  # (n_z = 1000)
 
     I = I_0
@@ -135,20 +136,20 @@ def plot_I(I):
 
 def globals():
     # constants
-    h = 6.62607004e-34 * m**2 * kg / s
-    c = 299792458 * m / s
+    h = const.h # 6.62607004e-34 * J * s
+    c = const.c # 299792458 * m / s
 
     # Discretisation parameters
     # x-array parameters
     n = 1024
     n_x = n
-    x_max = 10 * mm
+    x_max = (n_x / 2) * 5 * um
     x = np.linspace(-x_max, x_max, n_x, endpoint=False)
     delta_x = x[1] - x[0]
-    # y-array parameters
+    # # y-array parameters
     n_y = n
-    y_max = 10 * mm
-    y = np.linspace(-y_max, y_max, n_y, endpoint=False)#.reshape(n_y, 1)
+    y_max = (n_y / 2) * 5 * um
+    y = np.linspace(-y_max, y_max, n_y, endpoint=False)
     delta_y = y[1] - y[0]
     y = y.reshape(n_y, 1)
 
@@ -160,16 +161,22 @@ def globals():
     # δ1 = 462.8 * nm # PMMA
     # μ1 = 41.2 # per meter # PMMA
 
-    # # # parameters as per energy_dispersion_Sim-1.py (MK's code)
-    energy1 = 3.5509e-15 * J #  = 22.1629 * keV #- Ag k-alpha1
-    δ1 = 468.141 * nm 
-    μ1 = 64.38436 
-    λ = h * c / energy1
+    # # # # parameters as per energy_dispersion_Sim-1.py (MK's code)
+    # energy1 = 3.5509e-15 * J #  = 22.1629 * keV #- Ag k-alpha1
+    # δ1 = 468.141 * nm 
+    # μ1 = 64.38436 
+    # λ = h * c / energy1
     # # # secondary parameters
     # energy2 = 3.996e-15  * J # = 24.942 * keV # - Ag k-beta1
     # δ1 = 369.763 *nm
     # μ1 = 50.9387 
     # λ = h * c / energy2
+
+    # # # TESTING HIGHER ENERGY X-RAY sample: H20 density: 1.0 g/(cm**3)
+    energy1 = 8.01088e-15
+    δ1 = 92.1425 * nm 
+    μ1 = 22.69615 
+    λ = h * c / energy1
 
     # wave number
     k0 = 2 * np.pi / λ  # x-rays wavenumber
@@ -178,18 +185,14 @@ def globals():
     𝜎_x = 0.0027 * mm
 
     # Cylinder1 parameters
-    D = 12.75 * mm
+    D = 4 * mm
     R = D / 2
-
-    # Cylinder2 parameters
-    D2 = 6 * mm
-    R2 = D2 / 2
 
     z_c = 0 * mm
     x_c = 0 * mm
-    height = 20 * mm # change to 10mm?
+    height = 10 * mm
 
-    return x, y, n_x, n_y, delta_x, delta_y, k0, R, R2, z_c, x_c, δ1, μ1, 𝜎_x, height
+    return x, y, n_x, n_y, delta_x, delta_y, k0, R, z_c, x_c, δ1, μ1, 𝜎_x, height
 
 
 # -------------------------------------------------------------------------------- #
@@ -197,7 +200,7 @@ def globals():
 
 if __name__ == '__main__':
 
-    x, y, n_x, n_y, delta_x, delta_y, k0, R, R2, z_c, x_c, δ1, μ1, 𝜎_x, height = globals()
+    x, y, n_x, n_y, delta_x, delta_y, k0, R, z_c, x_c, δ1, μ1, 𝜎_x, height = globals()
 
     # # ICS
     I_initial = np.ones_like(x * y)

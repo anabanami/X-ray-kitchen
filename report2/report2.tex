@@ -58,6 +58,13 @@ Using the projection approximation to establish my initial conditions, I solved 
 \captionof{figure}{These phase contrast image and phase contrast cross section were the best results I obtained from my Fourier TIE method. Unfortunately my Fourier method was not able to simultaneously match the expected phase contrast peak height given the energy and sample material parameters while at the same time remaining stable. The parameters used to obtain this image were an X-ray energy equal to $24.942$keV (corresponding to a Ag k-beta1 source), the cylinder's material was water which has a refractive index decrement $\delta_1 = 369.763$nm while the attenuation coefficient at this energy is $\mu_1 = 50.9387\mathrm{m^{-1}}$, the sigmoid function blurred 0.5 pixels over the edge of the imaged cylinder. The apparent asymmetry of the two-dimensional phase contrast image is due to aliasing.}
 \end{Figure}
 
+CHANGE TO
+    energy1 = 3.5509e-15 * J #  = 22.1629 * keV #- Ag k-alpha1
+    δ0 = 468.141 * nm 
+    μ0 = 64.38436 
+    λ = h * c / energy1
+
+
 After these suboptimal result I decided to change my approach slightly and at the suggestion of my supervisor I used \texttt{numpy.gradient} for the derivative terms and \texttt{scipy.ndimage.laplace} for the phase Laplacian term in the TIE. This time my code discretised the two-dimensional space as an x and a y array each with 1024 points. 
 After these changes I was able to understand the probable underlying reason why my Fourier method didn't work even though in theory it should have, given that it is accurate to infinite order\cite{Chris}\cite{Fornberg}. The issue was due to an effect known as Gibbs phenomenon, this effect occurs when the nth partial sum of a Fourier series undergoes large oscillations near regions with jump discontinuities\cite{Gibbs}. Discovering that higher degree polynomial interpolation does not always improve accuracy was certainly unexpected.
 \begin{Figure}
@@ -66,6 +73,11 @@ After these changes I was able to understand the probable underlying reason why 
 \captionof{figure}{These phase contrast image and phase contrast cross section were obtained using my non-Fourier method. As it can be seen here the phase contrast peaks are much higher than the profile found using the Fourier method. The parameters used to obtain this image were an X-ray energy equal to $24.942$keV (corresponding to a Ag k-beta1 source), the cylinder's material was water which has a refractive index decrement $\delta_1 = 369.763$ nm while the attenuation coefficient at this energy is $\mu_1 = 50.9387\mathrm{m^{-1}}$, the sigmoid function blurred 0.14 pixels over the edge of the imaged cylinder. The apparent asymmetry of the two-dimensional phase contrast image is due to aliasing.}
 \end{Figure}
 
+CHANGE TO
+    energy1 = 3.5509e-15 * J #  = 22.1629 * keV #- Ag k-alpha1
+    δ0 = 468.141 * nm 
+    μ0 = 64.38436 
+    λ = h * c / energy1
 
 
 % Therefore my first simulation will be that of a single monomorphic cylinder, and later on I will work on 2 cylinders, one embedded on another, both these cylinders will have different densities, since I want to understand how much density difference is needed before I see phase contrast in my simulation.
