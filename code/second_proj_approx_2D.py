@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from scipy.ndimage.filters import laplace
+from scipy.ndimage import zoom
 import scipy.constants as const
 from physunits import m, cm, mm, nm, um, keV
 
@@ -217,6 +218,10 @@ if __name__ == '__main__':
     ##################### PLOTS & TESTS #############################
 
     I = I_list[-1,:, :]
+
+    # # Re-bin step each pixel should now be 20um (for the case of 5um pixels)
+    # I = zoom(I, 4.0, order=3)
+    # x = zoom(x, 4.0, order=3)
     plot_I(I)
 
     # I_z = finite_diff(1 * m, I_0)

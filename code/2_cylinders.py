@@ -35,7 +35,7 @@ def plots_I(x, I):
     plt.show()
 
     # # PLOT I vs x (a single slice)
-    plt.plot(x, I[900])
+    plt.plot(x, I[-1])
     plt.xlabel("x")
     plt.ylabel("I(x)")
     plt.title("Intensity profile")
@@ -48,24 +48,37 @@ def globals():
     c = const.c # 299792458 * m / s
 
     # Magnification
-    M = 2.5
-    # M = 4.0
+    # M = 1
+    # M = 2.5
+    M = 4.0
 
-    # # # Discretisation parameters
+    # # Discretisation parameters
+
+    # # # x-array parameters
+    # n = 1024
+    # n_x = n
+    # x_max = (n_x / 2) * 5 * um
+    # x = np.linspace(-x_max, x_max, n_x, endpoint=False)
+    # delta_x = x[1] - x[0]
+    # # # y-array parameters
+    # n_y = n
+    # y_max = (n_y / 2) * 5 * um
+    # y = np.linspace(-y_max, y_max, n_y, endpoint=False)
+    # delta_y = y[1] - y[0]
+    # y = y.reshape(n_y, 1)
+
+    # # Matching LAB
     # # x-array parameters
     delta_x = 55 * um / M
     x_max = 35 * mm / M
     x_min = -x_max
-
     n_x = int((x_max - x_min) / delta_x)
     print(f"\n{n_x = }")
     x = np.linspace(-x_max, x_max, n_x, endpoint=False) 
-   
     # # y-array parameters
     delta_y = 55 * um / M
     y_max = 7 * mm / M
     y_min = -y_max
-
     n_y = int((y_max - y_min) / delta_y)
     print(f"\n{n_y = }")
     y = np.linspace(-y_max, y_max, n_y, endpoint=False).reshape(n_y, 1)
@@ -83,7 +96,21 @@ def globals():
     μ2 = 59.38677 # per m
     β2 = μ2 / (2 * k1)
 
-    # # Optimistic case 
+    # # Pessimistic case  
+    # E1 = 24 # keV
+    # λ = h * c / (E1 * 1000 * const.eV)
+    # k1 = 2 * np.pi / λ  # x-rays wavenumber
+
+    # # # Material = gray matter, density = 1.045 g/cm**3
+    # δ1 = 413.45 * nm
+    # μ1 =  58.2978 # per m
+    # β1 = μ1 / (2 * k1)
+    # # # Material = white matter, density = 1.041 g/cm**3
+    # δ2 = 411.87 * nm
+    # μ2 = 58.0747 # per m
+    # β2 = μ2 / (2 * k1)
+
+    # # Optimistic case (Brain samples)
     # E1 = 24 # keV
     # λ = h * c / (E1 * 1000 * const.eV)
     # k1 = 2 * np.pi / λ  # x-rays wavenumber
@@ -137,7 +164,7 @@ if __name__ == '__main__':
     print("Propagating Wavefield")
     I = xri.sim.propAS(two_cylinders_δT, two_cylinders_βT, E1, z_final, delta_x, supersample=6)
 
-    # Re-bin step each pixel should now be 20um
-    I = zoom(I, 4.0, order=3)
-    x = zoom(x, 4.0, order=3)
+    # # Re-bin step each pixel should now be 20um (for the case of 5um pixels)
+    # I = zoom(I, 4.0, order=3)
+    # x = zoom(x, 4.0, order=3)
     plots_I(x, I)
