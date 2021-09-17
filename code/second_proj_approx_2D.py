@@ -174,7 +174,7 @@ def globals():
     # λ = h * c / energy2
 
     # # # TESTING HIGHER ENERGY X-RAY sample: H20 density: 1.0 g/(cm**3)
-    energy1 = 8.01088e-15
+    energy1 = 50 * keV
     δ1 = 92.1425 * nm 
     μ1 = 22.69615 
     λ = h * c / energy1
