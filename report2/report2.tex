@@ -116,7 +116,7 @@ In this simulation I assume that grey and white matter have the same chemical co
 \begin{Figure}
 \centering
 \includegraphics[width=\linewidth]{optimistic_case.pdf}
-\captionof{figure}{This phase contrast image and phase contrast cross section were obtained with the angular spectrum formulation method as the \texttt{xri.sim.propAS()} function created by the X-ray imaging group. The pase contrast fringes from the inner cylinder are extremely small but can still be observed. The X-ray energy used in this simulation was $E = 24$keV. The water cylinder has a refractive index decrement $\delta_{GM} = 459.1$nm, under this energy the attenuation coefficient of grey matter is $\mu_{GM} = 52\mathrm{m^{-1}}$. The white matter cylinder has a refractive index decrement $\delta_{WM} = 426.31$nm and attenuation coefficient $\mu_{GM}= 56\mathrm{m^{-1}}$. The cylinders' radii were $R_{GM} = 2$mm and $R_{WM} = 1$mm. The propagation distance used was $z = 2.5$m.}
+\captionof{figure}{This phase contrast image (a) and phase contrast cross section (b)(c) were obtained with the angular spectrum formulation method as the \texttt{xri.sim.propAS()} function created by the X-ray imaging group. In figure (c) it can be seen that the phase contrast fringes from the inner cylinder are extremely small but can still be observed when the image in (b) is amplified enough. The X-ray energy used in this simulation was $E = 24$keV. The water cylinder has a refractive index decrement $\delta_{GM} = 459.1$nm, under this energy the attenuation coefficient of grey matter is $\mu_{GM} = 52\mathrm{m^{-1}}$. The white matter cylinder has a refractive index decrement $\delta_{WM} = 426.31$nm and attenuation coefficient $\mu_{GM}= 56\mathrm{m^{-1}}$. The cylinders' radii were $R_{GM} = 2$mm and $R_{WM} = 1$mm. The propagation distance used was $z = 2.5$m.}
 \end{Figure}
 
 To do these two tests I verified that the my calculated theoretical and experimental $\mu$ values of grey and white matter do not match. Which lead me to find distinct values of $\delta$ for both tests. This mismatch was probably because in the density difference case test the assumption is that there are no chemical differences at all between grey and white matter but this is likely not true. 
@@ -124,7 +124,7 @@ My supervisor and I decided that I should continue using the chemical difference
 
 \section{Future Plans}
 
-My supervisor and I are planning to verify my simulation results for the water and ice case in his lab as soon as possible.
+My supervisor and I are planning to verify my simulation results for the water and ice case in his lab as soon as possible. We will be testing an X-ray target made of silver which has been newly obtained for the lab apparatus. I aim to do data analysis to compare the results from the new silver target to the classic tungsten target currently used in the apparatus.
 
 I aim to finish my simulation by creating a graphic user interface (GUI) that allows the user to modify interactively the density parameters of the imaged concentric cylinders in the simulation. The goal is to make a easily operated visual representation of the changes in phase and intensity of the X-rays as they interact with the object in-situ.
 
