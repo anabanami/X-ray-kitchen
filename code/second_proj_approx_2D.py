@@ -21,7 +21,8 @@ def y_sigmoid(y):
 def δ(x, y, z, δ1):
     '''Refractive index: δ1 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
-    r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
+    # r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2) # centered at zero
+    r = np.sqrt(x ** 2 + z ** 2)
     δ_array = δ1 * (1 / (1 + np.exp((r - R) / 𝜎_x)))
     return δ_array # np.shape(δ_array) = (n_y, n_x)
 
@@ -29,7 +30,8 @@ def δ(x, y, z, δ1):
 def μ(x, y, z, μ1):
     '''attenuation coefficient: μ1 within the cylinder 
     decreasing to zero at the edges Sigmoid inspired:'''
-    r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2)
+    # r = np.sqrt((x - x_c) ** 2 + (z - z_c) ** 2) # centered at zero
+    r = np.sqrt(x ** 2 + z ** 2)
     μ_array = μ1 * (1 / (1 + np.exp((r - R) / 𝜎_x)))
     return μ_array # np.shape(μ_array) = (n_y, n_x)
 
@@ -128,7 +130,7 @@ def plot_I(I):
     plt.show()
 
     # PLOT I vs x (a single slice)
-    plt.plot(x, I[np.int(n_y / 2),:])
+    plt.plot(I[np.int(n_y / 2),:])
     plt.xlabel("x")
     plt.ylabel("I(x)")
     plt.title("Intensity profile")
@@ -154,21 +156,13 @@ def globals():
     delta_y = y[1] - y[0]
     y = y.reshape(n_y, 1)
 
-    # # # X-ray beam parameters
-    # # # (Beltran et al. 2010)
-    # E = 3.845e-15 * J 
-    # λ = h * c / E
-    # # # refraction and attenuation coefficients
-    # δ1 = 462.8 * nm # PMMA
-    # μ1 = 41.2 # per meter # PMMA
-
     # # # # parameters as per energy_dispersion_Sim-1.py (MK's code)
-    # energy1 = 3.5509e-15 * J #  = 22.1629 * keV #- Ag k-alpha1
+    # energy1 = 22.1629 * keV #- Ag k-alpha1
     # δ1 = 468.141 * nm 
     # μ1 = 64.38436 
     # λ = h * c / energy1
     # # # secondary parameters
-    # energy2 = 3.996e-15  * J # = 24.942 * keV # - Ag k-beta1
+    # energy2 = 24.942 * keV # - Ag k-beta1
     # δ1 = 369.763 *nm
     # μ1 = 50.9387 
     # λ = h * c / energy2
