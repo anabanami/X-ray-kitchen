@@ -52,7 +52,7 @@ def globals():
     # M = 2.5
     M = 4.0
 
-    # # Discretisation parameters
+    # Discretisation parameters
 
     # # # x-array parameters
     # n = 1024
@@ -162,7 +162,7 @@ if __name__ == '__main__':
     two_cylinders_βT = βT1 + (β2 - β1) * T2  
 
     print("Propagating Wavefield")
-    I = xri.sim.propAS(two_cylinders_δT, two_cylinders_βT, E1, z_final, delta_x, supersample=6)
+    I = xri.sim.propAS(two_cylinders_δT, two_cylinders_βT, E1, z_final, delta_x, supersample=3)
 
     # # Re-bin step each pixel should now be 20um (for the case of 5um pixels)
     # I = zoom(I, 4.0, order=3)
