@@ -100,7 +100,6 @@ def globals():
     # E1 = 24 # keV
     # λ = h * c / (E1 * 1000 * const.eV)
     # k1 = 2 * np.pi / λ  # x-rays wavenumber
-
     # # # Material = gray matter, density = 1.045 g/cm**3
     # δ1 = 413.45 * nm
     # μ1 =  58.2978 # per m

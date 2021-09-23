@@ -83,13 +83,22 @@ def globals():
     # μ1 = 999.13349 # per m
     # β1 = μ1 / (2 * k1)
 
-    E1 = 9.7 # keV # W 
+    E1 = 19 # keV # W 
     λ1 = h * c / (E1 * 1000 * const.eV)
     k1 = 2 * np.pi / λ1 # x-rays wavenumber2
     # Material = water, density = 1 g/cm**3
-    δ1 =  245.782 * nm
-    μ1 = 583.22302 # per m
+    δ1 =  6.38803e-07 
+    μ1 =  91.32598 # per m
     β1 = μ1 / (1 * k1)
+
+
+    # E1 = 9.7 # keV # W 
+    # λ1 = h * c / (E1 * 1000 * const.eV)
+    # k1 = 2 * np.pi / λ1 # x-rays wavenumber2
+    # # Material = water, density = 1 g/cm**3
+    # δ1 =  245.782 * nm
+    # μ1 = 583.22302 # per m
+    # β1 = μ1 / (1 * k1)
 
     # E1 = 11.2 # keV # W
     # λ1 = h * c / (E1 * 1000 * const.eV)
@@ -148,23 +157,27 @@ if __name__ == '__main__':
 
     # print("Propagating Wavefield")
     # I = xri.sim.propAS(δT1, βT1, E1, z_final, delta_x, supersample=3)
-    # np.save(f'I1_2.npy', I)
+    # np.save(f'I1_6.npy', I)
 
     # # # Re-bin step each pixel should now be 20um (for the case of 5um pixels)
-    # I = zoom(I, 4.0, order=3)
+    # I = zoom(I, 0.25, order=3)
     # plots_I(I)
 
     I1 = np.load("I1_1.npy")
     I2 = np.load("I1_2.npy")
     I3 = np.load("I1_3.npy")
+    I6 = np.load("I1_6.npy")
 
-    I1 = zoom(I1, 4.0, order=3)
-    I2 = zoom(I2, 4.0, order=3)
-    I3 = zoom(I3, 4.0, order=3)
+    I1 = zoom(I1, 0.25, order=3)
+    I2 = zoom(I2, 0.25, order=3)
+    I3 = zoom(I3, 0.25, order=3)
+    I6 = zoom(I6, 0.25, order=3)
 
     plt.plot(I1[-1], label="E = 8.1 keV")
     plt.plot(I2[-1], label="E = 9.7 keV")
     plt.plot(I3[-1], label="E = 11.2 keV")
+    plt.plot(I6[-1], label="E = 19 keV")
+    plt.axvline(27, color="grey", ls=":")
     plt.legend()
     plt.xlabel("x")
     plt.ylabel("I(x)")
@@ -174,8 +187,8 @@ if __name__ == '__main__':
     I4 = np.load("I1_4.npy")
     I5 = np.load("I1_5.npy")
 
-    I4 = zoom(I4, 4.0, order=3)
-    I5 = zoom(I5, 4.0, order=3)
+    I4 = zoom(I4, 0.25, order=3)
+    I5 = zoom(I5, 0.25, order=3)
 
     plt.plot(I4[-1], label="E = 21.99 keV")
     plt.plot(I5[-1], label="E = 24.911 keV")

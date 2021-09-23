@@ -5,7 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import physunits
 from scipy.fft import fft, ifft, fft2, ifft2
-from physunits import m, cm, mm, nm, J, kg, s
+from physunits import m, cm, mm, nm, J, kg, s, keV
 
 plt.rcParams['figure.dpi'] = 150
 
@@ -103,7 +103,7 @@ def propagation_loop(I_0):
     i = 0
     z = 0
     z_final = 1000 * mm
-    delta_z = 10 * mm  # (n_z = 100)
+    delta_z = 1 * mm  # (n_z = 100)
 
     I = I_0
 
@@ -156,7 +156,7 @@ def globals():
     # k0 = 2 * np.pi / λ  # x-rays wavenumber
 
     #Parameters as per energy_dispersion_Sim-1.py
-    energy1 = 3.5509e-15 * J #  = 22.1629 * keV #- Ag k-alpha1
+    energy1 = 22.1629 * keV #- Ag k-alpha1
     δ0 = 468.141 * nm 
     μ0 = 64.38436 
     λ = h * c / energy1
