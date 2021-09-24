@@ -1,14 +1,6 @@
-TIE_test.py
-cylinder_plot.py
 I_list.npy
 intensity_x_y.npy
 phase_x_y.npy
 psi_list.npy
 Energy_Dispersion_Sim-1.py
-params_Sim-1.py
 simulations/
-solver.py
-proj_approx.py
-second_proj_approx_2D.py
-proj_approx_2D.py
-tests_proj_approx_1D.py
