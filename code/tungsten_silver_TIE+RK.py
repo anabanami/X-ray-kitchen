@@ -95,15 +95,15 @@ def globals():
     delta_y = y[1] - y[0]
     y = y.reshape(n_y, 1)
 
-    ## Parameters from X-ray attenuation calculator   
-    ### TUNGSTEN PEAKS ###
-    E = 8.1 * keV # W
-    λ = h * c / (E * 1000 * const.eV)
-    k = 2 * np.pi / λ # x-rays wavenumber1
-    # Material = water, density = 1 g/cm**3
-    δ1 = 3.52955e-06
-    μ1 = 999.13349 # per m
-    β = μ1 / (2 * k)
+    # ## Parameters from X-ray attenuation calculator   
+    # ### TUNGSTEN PEAKS ###
+    # E = 8.1 * keV # W
+    # λ = h * c / (E * 1000 * const.eV)
+    # k = 2 * np.pi / λ # x-rays wavenumber1
+    # # Material = water, density = 1 g/cm**3
+    # δ1 = 3.52955e-06
+    # μ1 = 999.13349 # per m
+    # β = μ1 / (2 * k)
 
     # E = 9.7 * keV # W 
     # λ = h * c / (E * 1000 * const.eV)
@@ -121,7 +121,7 @@ def globals():
     # μ1 = 381.85592 # per m
     # β = μ1 / (2 * k)
 
-    ## SILVER PEAKS ##
+    # ## SILVER PEAKS ##
     # E = 21.99 * keV
     # λ = h * c / (E * 1000 * const.eV)
     # k = 2 * np.pi / λ  # x-rays wavenumber
@@ -138,7 +138,7 @@ def globals():
     # μ1 = 51.15927 # per m
     # β = μ1 / (2 * k)
 
-    ## HIGHER ENERGY ###
+    # # HIGHER ENERGY ###
     # E = 19 * keV
     # λ = h * c / (E * 1000 * const.eV)
     # k = 2 * np.pi / λ # x-rays wavenumber2
@@ -154,6 +154,22 @@ def globals():
     # δ1 =  3.68785e-07
     # μ1 =  50.82067 # per m
     # β = μ1 / (2 * k)
+
+    # E = 30 * keV 
+    # λ = h * c / (E * 1000 * const.eV)
+    # k = 2 * np.pi / λ # x-rays wavenumber2
+    # # Material = water, density = 1 g/cm**3
+    # δ1 =  2.56043e-07
+    # μ1 =  37.55906 # per m
+    # β = μ1 / (2 * k)
+
+    E = 35 * keV 
+    λ = h * c / (E * 1000 * const.eV)
+    k = 2 * np.pi / λ # x-rays wavenumber2
+    # Material = water, density = 1 g/cm**3
+    δ1 =  1.88086e-07
+    μ1 =  30.74816 # per m
+    β = μ1 / (2 * k)
 
     # Cylinder parameters
     D = 4 * mm
@@ -192,12 +208,12 @@ if __name__ == '__main__':
     dΦ_dx, dΦ_dy, lap_Φ = gradΦ_laplacianΦ(Φ)
 
     # # Fourth order Runge-Kutta
-    z_final =  1 * m # propagation distance
+    z_final = 5 * m # propagation distance
     delta_z = 1 * mm  # (n_z = 100)
     I_list = propagation_loop(I_0) # np.shape(I_list) = (n_z / 10, n_y,  n_x)
 
     I = I_list[-1,:, :]
-    np.save(f'1m_I2_1.npy', I)
+    np.save(f'5m_I2_9.npy', I)
 
     # I = np.load("1m_I2_1.npy")
     # I = zoom(I, 0.125, order=3)
