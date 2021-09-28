@@ -59,14 +59,26 @@ def globals():
     delta_y = y[1] - y[0]
     y = y.reshape(n_y, 1)
 
-    # # # <---- TEST
-    # E1 = 22.1629 # keV # Ag k-alpha1 
-    # λ = h * c / (E1 * 1000 * const.eV)
-    # k1 = 2 * np.pi / λ  # x-rays wavenumber
-    # # Material = water, density = 1 g/cm**3
-    # δ1 = 469.337 * nm
-    # μ1 = 64.55083 # per m
-    # β1 = μ1 / (2 * k1)
+    # # Matching LAB
+    # Magnification
+    # M = 1
+    M = 2.5
+    # M = 4.0
+
+    # # x-array parameters
+    delta_x = 55 * um / M
+    x_max = 35 * mm / M
+    x_min = -x_max
+    n_x = int((x_max - x_min) / delta_x)
+    print(f"\n{n_x = }")
+    x = np.linspace(-x_max, x_max, n_x, endpoint=False) 
+    # # y-array parameters
+    delta_y = 55 * um / M
+    y_max = 7 * mm / M
+    y_min = -y_max
+    n_y = int((y_max - y_min) / delta_y)
+    print(f"\n{n_y = }")
+    y = np.linspace(-y_max, y_max, n_y, endpoint=False).reshape(n_y, 1)
 
     # ## Parameters from X-ray attenuation calculator   
     # ### TUNGSTEN PEAKS ###
@@ -94,7 +106,7 @@ def globals():
     # μ = 381.85592 # per m
     # β = μ / (2 * k)
 
-    ## SILVER PEAKS ##
+    # ## SILVER PEAKS ##
     # E = 21.99 # keV
     # λ = h * c / (E * 1000 * const.eV)
     # k = 2 * np.pi / λ  # x-rays wavenumber
@@ -158,7 +170,7 @@ def globals():
     height = 10 * mm
 
 
-    return x, y, n_x, n_y, delta_x, delta_y, E, k, δ, μ, β, kx, ky, R, z_c, x_c, height 
+    return M, x, y, n_x, n_y, delta_x, delta_y, E, k, δ, μ, β, kx, ky, R, z_c, x_c, height 
 
 
 # -------------------------------------------------------------------------------- #
@@ -166,9 +178,9 @@ def globals():
 
 if __name__ == '__main__':
 
-    x, y, n_x, n_y, delta_x, delta_y, E, k, δ, μ, β, kx, ky, R, z_c, x_c, height  = globals()
+    M, x, y, n_x, n_y, delta_x, delta_y, E, k, δ, μ, β, kx, ky, R, z_c, x_c, height  = globals()
 
-    z_final =  5 * m # propagation distance
+    z_final = 5 * m / M # eff propagation distance
 
     T = thicc(x, y, R)
     δT = δ * T
@@ -176,44 +188,11 @@ if __name__ == '__main__':
 
     print("Propagating Wavefield")
     I = xri.sim.propAS(δT, βT, E, z_final, delta_x, supersample=3)
-    np.save(f'5m_I1_9.npy', I)
+    np.save(f'5m_I1_9_M=2.5.npy', I)
 
 
-    plt.plot(I[-10,:])
-    plt.xlabel("x")
-    plt.ylabel("I(x)")
-    plt.title("Intensity profile")
-    plt.show()
-
-    # I1 = np.load("1m_I1_1.npy")
-    # I2 = np.load("1m_I1_2.npy")
-    # I3 = np.load("1m_I1_3.npy")    
-    # I4 = np.load("1m_I1_4.npy")
-    # I5 = np.load("1m_I1_5.npy")
-    # I6 = np.load("1m_I1_6.npy")
-    # I7 = np.load("1m_I1_7.npy")
-
-    # plt.plot(I1[-1], label="E = 8.1 keV")
-    # plt.plot(I2[-1], label="E = 9.7 keV")
-    # plt.plot(I3[-1], label="E = 11.2 keV")
-    # plt.plot(I6[-1], label="E = 19 keV")
-    # plt.plot(I7[-1], label="E = 25 keV")
-    # plt.axvline(104, color="pink", ls=":", label=r"W peak at $z_{\mathrm{eff}}$ = 1 m")
-    # plt.axvline(921, color="pink", ls=":")
-    # plt.legend()
+    # plt.plot(I[-10,:])
     # plt.xlabel("x")
     # plt.ylabel("I(x)")
-    # plt.title(r"Tungsten peaks $z_{eff} = 1 m$")
-    # plt.show()
-
-    # plt.plot(I4[-1], label="E = 21.99 keV")
-    # plt.plot(I5[-1], label="E = 24.911 keV")
-    # plt.plot(I6[-1], label="E = 19 keV")
-    # plt.plot(I7[-1], label="E = 25 keV")
-    # plt.axvline(109, color="grey", ls=":", label=r"Ag peak at $z_{\mathrm{eff}}$ = 1 m")
-    # plt.axvline(920, color="grey", ls=":")
-    # plt.legend()
-    # plt.xlabel("x")
-    # plt.ylabel("I(x)")
-    # plt.title("Silver peaks $z_{eff} = 1 m$")
+    # plt.title("Intensity profile")
     # plt.show()
