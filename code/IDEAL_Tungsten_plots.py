@@ -2,8 +2,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
     
-plt.rcParams['figure.dpi'] = 200
-
+# plt.rcParams['figure.dpi'] = 200
 
 # # # LOAD: LAB parameters AS 
 # _1m_1 = np.load("1m_I1_1.npy")
@@ -102,6 +101,7 @@ average_5 = 1/4 * (_5m_1 + _5m_2 + _5m_3 + _5m_4)
 
 # # DIFFERENT ENERGY PEAKS @ SAME PROP DISTANCES ###
 # # 1m
+# plt.figure(figsize=(4, 3))
 # plt.plot(_1m_1, label="E = 8.1 keV")
 # plt.plot(_1m_2, label="E = 9.7 keV")
 # plt.plot(_1m_3, label="E = 11.2 keV")
@@ -119,6 +119,7 @@ average_5 = 1/4 * (_5m_1 + _5m_2 + _5m_3 + _5m_4)
 # plt.show()
 
 # 2.5m
+plt.figure(figsize=(4, 3))
 plt.plot(_2_5m_1, label="E = 8.1 keV")
 plt.plot(_2_5m_2, label="E = 9.7 keV")
 plt.plot(_2_5m_3, label="E = 11.2 keV")
@@ -136,6 +137,7 @@ plt.title(fR"TIE: Tungsten peaks  z = 2.5 m")
 plt.show()
 
 # # # 5m
+# plt.figure(figsize=(4, 3))
 # plt.plot(_5m_1, label="E = 8.1 keV")
 # plt.plot(_5m_2, label="E = 9.7 keV")
 # plt.plot(_5m_3, label="E = 11.2 keV")
@@ -155,58 +157,62 @@ plt.show()
 
 ########################################################################################
 
-## SAME ENERGY PEAKS @ DIFFERENT PROP DISTANCES ###
-plt.plot(_1m_1, label=fR"$z_{{eff}}$ = 1 m")
-plt.plot(_2_5m_1, label=fR"$z_{{eff}}$ = 2.5 m")
-plt.plot(_5m_1, label=fR"$z_{{eff}}$ = 5 m")
-plt.grid(color='grey', linestyle=':', linewidth=0.4)
-plt.xlabel("x")
-plt.ylabel("I(x)")
+# ## SAME ENERGY PEAKS @ DIFFERENT PROP DISTANCES ###
+# # plt.figure(figsize=(4, 3))
+# plt.plot(_1m_1, label=fR"$z_{{eff}}$ = 1 m")
+# plt.plot(_2_5m_1, label=fR"$z_{{eff}}$ = 2.5 m")
+# plt.plot(_5m_1, label=fR"$z_{{eff}}$ = 5 m")
+# plt.grid(color='grey', linestyle=':', linewidth=0.4)
+# plt.xlabel("x")
+# plt.ylabel("I(x)")
 # plt.title("AS: Intensity profiles: W at 8.1 keV")
-# plt.title("TIE+RK: Intensity profiles: W at 8.1 keV")
-plt.title("TIE: Intensity profiles: W at 8.1 keV")
-plt.legend()
-plt.show()
+# # plt.title("TIE+RK: Intensity profiles: W at 8.1 keV")
+# # plt.title("TIE: Intensity profiles: W at 8.1 keV")
+# plt.legend()
+# plt.show()
 
-plt.plot(_1m_2, label=fR"$z_{{eff}}$ = 1 m")
-plt.plot(_2_5m_2, label=fR"$z_{{eff}}$ = 2.5 m")
-plt.plot(_5m_2, label=fR"$z_{{eff}}$ = 5 m")
-plt.grid(color='grey', linestyle=':', linewidth=0.4)
-plt.xlabel("x")
-plt.ylabel("I(x)")
+# plt.figure(figsize=(4, 3))
+# plt.plot(_1m_2, label=fR"$z_{{eff}}$ = 1 m")
+# plt.plot(_2_5m_2, label=fR"$z_{{eff}}$ = 2.5 m")
+# plt.plot(_5m_2, label=fR"$z_{{eff}}$ = 5 m")
+# plt.grid(color='grey', linestyle=':', linewidth=0.4)
+# plt.xlabel("x")
+# plt.ylabel("I(x)")
 # plt.title("AS: Intensity profiles: W at 9.7 keV")
-# plt.title("TIE+RK: Intensity profiles: W at 9.7 keV")
-plt.title("TIE: Intensity profiles: W at 9.7 keV")
-plt.legend()
-plt.show()
+# # plt.title("TIE+RK: Intensity profiles: W at 9.7 keV")
+# # plt.title("TIE: Intensity profiles: W at 9.7 keV")
+# plt.legend()
+# plt.show()
 
-plt.plot(_1m_3, label=fR"$z_{{eff}}$ = 1 m")
-plt.plot(_2_5m_3, label=fR"$z_{{eff}}$ = 2.5 m")
-plt.plot(_5m_3, label=fR"$z_{{eff}}$ = 5 m")
-plt.grid(color='grey', linestyle=':', linewidth=0.4)
-plt.xlabel("x")
-plt.ylabel("I(x)")
+# plt.figure(figsize=(4, 3))
+# plt.plot(_1m_3, label=fR"$z_{{eff}}$ = 1 m")
+# plt.plot(_2_5m_3, label=fR"$z_{{eff}}$ = 2.5 m")
+# plt.plot(_5m_3, label=fR"$z_{{eff}}$ = 5 m")
+# plt.grid(color='grey', linestyle=':', linewidth=0.4)
+# plt.xlabel("x")
+# plt.ylabel("I(x)")
 # plt.title("AS: Intensity profiles: W at 11.2 keV")
-# plt.title("TIE+RK: Intensity profiles: W at 11.2 keV")
-plt.title("TIE: Intensity profiles: W at 11.2 keV")
-plt.legend()
-plt.show()
+# # plt.title("TIE+RK: Intensity profiles: W at 11.2 keV")
+# # plt.title("TIE: Intensity profiles: W at 11.2 keV")
+# plt.legend()
+# plt.show()
 
-plt.plot(_1m_4, label=fR"$z_{{eff}}$ = 1 m")
-plt.plot(_2_5m_4, label=fR"$z_{{eff}}$ = 2.5 m")
-plt.plot(_5m_4, label=fR"$z_{{eff}}$ = 5 m")
-plt.grid(color='grey', linestyle=':', linewidth=0.4)
-plt.xlabel("x")
-plt.ylabel("I(x)")
+# plt.figure(figsize=(4, 3))
+# plt.plot(_1m_4, label=fR"$z_{{eff}}$ = 1 m")
+# plt.plot(_2_5m_4, label=fR"$z_{{eff}}$ = 2.5 m")
+# plt.plot(_5m_4, label=fR"$z_{{eff}}$ = 5 m")
+# plt.grid(color='grey', linestyle=':', linewidth=0.4)
+# plt.xlabel("x")
+# plt.ylabel("I(x)")
 # plt.title("AS: Intensity profiles: W at 21 keV")
-# plt.title("TIE+RK: Intensity profiles: W at 21 keV")
-plt.title("TIE: Intensity profiles: W at 21 keV")
-plt.legend()
-plt.show()
+# # plt.title("TIE+RK: Intensity profiles: W at 21 keV")
+# # plt.title("TIE: Intensity profiles: W at 21 keV")
+# plt.legend()
+# plt.show()
 
 
 
-# #######################################################################################
+# # #######################################################################################
 
 # # AS vs TIE + RK vs TIE ###
 
@@ -255,6 +261,7 @@ plt.show()
 # # _3_2_5m_4 = _3_2_5m_4.reshape(int(len( _3_2_5m_4 ) / 4), 4).mean(axis = -1)
 
 # #plots
+# plt.figure(figsize=(4, 3))
 # plt.plot(_1_2_5m_1, label="AS")
 # plt.plot(_2_2_5m_1, label="TIE+RK")
 # plt.plot(_3_2_5m_1, label="xri's TIE")
@@ -265,6 +272,7 @@ plt.show()
 # plt.title(fR"Tungsten 35kV: Characteristic X-ray peak $8.1$ keV at z = 2.5 m")
 # plt.show()
 
+# plt.figure(figsize=(4, 3))
 # plt.plot(_1_2_5m_2, label="AS")
 # plt.plot(_2_2_5m_2, label="TIE+RK")
 # plt.plot(_3_2_5m_2, label="xri's TIE")
@@ -275,6 +283,7 @@ plt.show()
 # plt.title(fR"Tungsten 35kV: Characteristic X-ray peak $9.7$ keV at z = 2.5 m")
 # plt.show()
 
+# plt.figure(figsize=(4, 3))
 # plt.plot(_1_2_5m_3, label="AS")
 # plt.plot(_2_2_5m_3, label="TIE+RK")
 # plt.plot(_3_2_5m_3, label="xri's TIE")
@@ -285,6 +294,7 @@ plt.show()
 # plt.title(fR"Tungsten 35kV: Characteristic X-ray peak $11.2$ keV at z = 2.5 m")
 # plt.show()
 
+# plt.figure(figsize=(4, 3))
 # plt.plot(_1_2_5m_4, label="AS")
 # plt.plot(_2_2_5m_4, label="TIE+RK")
 # plt.plot(_3_2_5m_4, label="xri's TIE")

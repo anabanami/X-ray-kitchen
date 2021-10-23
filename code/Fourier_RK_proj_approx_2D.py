@@ -7,7 +7,7 @@ import physunits
 from scipy.fft import fft, ifft, fft2, ifft2
 from physunits import m, cm, mm, nm, J, kg, s, keV
 
-plt.rcParams['figure.dpi'] = 150
+# plt.rcParams['figure.dpi'] = 150
 
 # functions
 
@@ -148,7 +148,7 @@ def globals():
     size_y = y.size
 
     # # # refraction and attenuation coefficients (Beltran et al. 2010)
-    # δ0 = 462.8 * nm 
+    # δ0 = 4.628e-7
     # μ0 = 41.2 # per meter 
     # # # X-ray beam parameters
     # E = 3.845e-15 * J 
@@ -157,7 +157,7 @@ def globals():
 
     #Parameters as per energy_dispersion_Sim-1.py
     energy1 = 22.1629 * keV #- Ag k-alpha1
-    δ0 = 468.141 * nm 
+    δ0 = 4.68141e-7
     μ0 = 64.38436 
     λ = h * c / energy1
 
@@ -211,6 +211,7 @@ if __name__ == '__main__':
     # I_0 = np.load("intensity_x_y.npy")
 
     # PLOT Phase contrast I in x, y
+    plt.figure(figsize=(4, 3))
     plt.imshow(I[50:-50], origin='lower')
     plt.colorbar()
     plt.xlabel("x")
@@ -219,6 +220,7 @@ if __name__ == '__main__':
     plt.show()
 
     # PLOT I vs x (a single slice)
+    plt.figure(figsize=(4, 3))
     plt.plot(x, I[np.int(n_y / 2),:])
     plt.xlabel("x")
     plt.ylabel("I(x)")

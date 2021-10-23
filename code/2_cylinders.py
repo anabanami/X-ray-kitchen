@@ -26,7 +26,7 @@ def thicc(x, y, R):
     return T
 
 def plots_I(x, I):
-
+    plt.figure(figsize=(4, 3))
     plt.imshow(I, origin='lower')
     plt.colorbar()
     plt.xlabel("x")
@@ -35,6 +35,7 @@ def plots_I(x, I):
     plt.show()
 
     # # PLOT I vs x (a single slice)
+    plt.figure(figsize=(4, 3))
     plt.plot(x, I[-1])
     plt.xlabel("x")
     plt.ylabel("I(x)")
@@ -83,18 +84,18 @@ def globals():
     print(f"\n{n_y = }")
     y = np.linspace(-y_max, y_max, n_y, endpoint=False).reshape(n_y, 1)
 
-    # Parameters from X-ray attenuation calculator   
-    E1 = 22.1629 # keV # Ag k-alpha1 
-    λ = h * c / (E1 * 1000 * const.eV)
-    k1 = 2 * np.pi / λ  # x-rays wavenumber
-    # Material = water, density = 1 g/cm**3
-    δ1 = 469.337 * nm
-    μ1 = 64.55083 # per m
-    β1 = μ1 / (2 * k1)
-    # Material = ice, density = 0.92 g/cm**3
-    δ2 = 431.790 * nm
-    μ2 = 59.38677 # per m
-    β2 = μ2 / (2 * k1)
+    # # Parameters from X-ray attenuation calculator   
+    # E1 = 22.1629 # keV # Ag k-alpha1 
+    # λ = h * c / (E1 * 1000 * const.eV)
+    # k1 = 2 * np.pi / λ  # x-rays wavenumber
+    # # Material = water, density = 1 g/cm**3
+    # δ1 = 469.337 * nm
+    # μ1 = 64.55083 # per m
+    # β1 = μ1 / (2 * k1)
+    # # Material = ice, density = 0.92 g/cm**3
+    # δ2 = 431.790 * nm
+    # μ2 = 59.38677 # per m
+    # β2 = μ2 / (2 * k1)
 
     # # Pessimistic case  
     # E1 = 24 # keV
@@ -109,18 +110,18 @@ def globals():
     # μ2 = 58.0747 # per m
     # β2 = μ2 / (2 * k1)
 
-    # # Optimistic case (Brain samples)
-    # E1 = 24 # keV
-    # λ = h * c / (E1 * 1000 * const.eV)
-    # k1 = 2 * np.pi / λ  # x-rays wavenumber
-    # # # Material = gray matter, density = ? g/cm**3
-    # δ1 = 459.1 * nm
-    # μ1 =  52 # per m
-    # β1 = μ1 / (2 * k1)
-    # # # Material = white matter, density = ? g/cm**3
-    # δ2 = 426.31 * nm
-    # μ2 = 56 # per m
-    # β2 = μ2 / (2 * k1)
+    # Optimistic case (Brain samples)
+    E1 = 24 # keV
+    λ = h * c / (E1 * 1000 * const.eV)
+    k1 = 2 * np.pi / λ  # x-rays wavenumber
+    # # Material = gray matter, density = ? g/cm**3
+    δ1 = 459.1 * nm
+    μ1 =  52 # per m
+    β1 = μ1 / (2 * k1)
+    # # Material = white matter, density = ? g/cm**3
+    δ2 = 426.31 * nm
+    μ2 = 56 # per m
+    β2 = μ2 / (2 * k1)
 
     # For Fourier space
     kx = 2 * np.pi * np.fft.fftfreq(n_x, delta_x)
@@ -149,7 +150,10 @@ if __name__ == '__main__':
 
     M, x, y, n_x, n_y, delta_x, delta_y, E1, k1, kx, ky, R1, R2, z_c, x_c, δ1, μ1, β1, δ2, μ2, β2, height = globals()
 
-    z_final =  2.5 * m / M # eff propagation distance
+    # z_final =  2.5 * m / M # eff propagation distance
+
+    z_actual = 2.5 * m
+    z_final = (z_actual - (z_actual / M)) / M # eff propagation distance
 
     T1 = thicc(x, y, R1)
     T2 = thicc(x, y, R2)
@@ -163,7 +167,4 @@ if __name__ == '__main__':
     print("Propagating Wavefield")
     I = xri.sim.propAS(two_cylinders_δT, two_cylinders_βT, E1, z_final, delta_x, supersample=3)
 
-    # # Re-bin step each pixel should now be 20um (for the case of 5um pixels)
-    # I = zoom(I, 4.0, order=3)
-    # x = zoom(x, 4.0, order=3)
     plots_I(x, I)

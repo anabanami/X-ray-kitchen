@@ -6,7 +6,7 @@ from scipy.ndimage import zoom
 import scipy.constants as const
 from physunits import m, cm, mm, nm, um, keV
 
-plt.rcParams['figure.dpi'] = 150
+# plt.rcParams['figure.dpi'] = 150
 
 # functions
 
@@ -122,6 +122,7 @@ def propagation_loop(I_0):
 
 def plot_I(I):
     # PLOT Phase contrast I in x, y
+    plt.figure(figsize=(4, 3))
     plt.imshow(I, origin='lower')
     plt.colorbar()
     plt.xlabel("x")
@@ -130,6 +131,7 @@ def plot_I(I):
     plt.show()
 
     # PLOT I vs x (a single slice)
+    plt.figure(figsize=(4, 3))
     plt.plot(I[np.int(n_y / 2),:])
     plt.xlabel("x")
     plt.ylabel("I(x)")
@@ -156,22 +158,22 @@ def globals():
     delta_y = y[1] - y[0]
     y = y.reshape(n_y, 1)
 
-    # # # # parameters as per energy_dispersion_Sim-1.py (MK's code)
-    # energy1 = 22.1629 * keV #- Ag k-alpha1
-    # δ1 = 468.141 * nm 
-    # μ1 = 64.38436 
-    # λ = h * c / energy1
+    # # # parameters as per energy_dispersion_Sim-1.py (MK's code)
+    energy1 = 22.1629 * keV #- Ag k-alpha1
+    δ1 = 4.68141e-7
+    μ1 = 64.38436 
+    λ = h * c / energy1
     # # # secondary parameters
     # energy2 = 24.942 * keV # - Ag k-beta1
     # δ1 = 369.763 *nm
     # μ1 = 50.9387 
     # λ = h * c / energy2
 
-    # # # TESTING HIGHER ENERGY X-RAY sample: H20 density: 1.0 g/(cm**3)
-    energy1 = 50 * keV
-    δ1 = 92.1425 * nm 
-    μ1 = 22.69615 
-    λ = h * c / energy1
+    # # # # TESTING HIGHER ENERGY X-RAY sample: H20 density: 1.0 g/(cm**3)
+    # energy1 = 50 * keV
+    # δ1 = 92.1425 * nm 
+    # μ1 = 22.69615 
+    # λ = h * c / energy1
 
     # wave number
     k0 = 2 * np.pi / λ  # x-rays wavenumber
@@ -218,6 +220,3 @@ if __name__ == '__main__':
     # I = zoom(I, 0.25, order=3)
     # x = zoom(x, 0.25, order=3)
     plot_I(I)
-
-    # I_z = finite_diff(1 * m, I_0)
-    # plot_I(I_z)
