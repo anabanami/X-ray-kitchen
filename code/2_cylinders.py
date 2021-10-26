@@ -26,7 +26,7 @@ def thicc(x, y, R):
     return T
 
 def plots_I(x, I):
-    plt.figure(figsize=(4, 3))
+    plt.figure(figsize=(4.5, 3.5))
     plt.imshow(I, origin='lower')
     plt.colorbar()
     plt.xlabel("x")
@@ -35,7 +35,7 @@ def plots_I(x, I):
     plt.show()
 
     # # PLOT I vs x (a single slice)
-    plt.figure(figsize=(4, 3))
+    plt.figure(figsize=(4.5, 3.5))
     plt.plot(x, I[-1])
     plt.xlabel("x")
     plt.ylabel("I(x)")
@@ -49,40 +49,40 @@ def globals():
     c = const.c # 299792458 * m / s
 
     # Magnification
-    # M = 1
+    M = 1
     # M = 2.5
-    M = 4.0
+    # M = 4.0
 
-    # Discretisation parameters
+    # # Discretisation parameters
 
-    # # # x-array parameters
-    # n = 1024
-    # n_x = n
-    # x_max = (n_x / 2) * 5 * um
-    # x = np.linspace(-x_max, x_max, n_x, endpoint=False)
-    # delta_x = x[1] - x[0]
-    # # # y-array parameters
-    # n_y = n
-    # y_max = (n_y / 2) * 5 * um
-    # y = np.linspace(-y_max, y_max, n_y, endpoint=False)
-    # delta_y = y[1] - y[0]
-    # y = y.reshape(n_y, 1)
-
-    # # Matching LAB
     # # x-array parameters
-    delta_x = 55 * um / M
-    x_max = 35 * mm / M
-    x_min = -x_max
-    n_x = int((x_max - x_min) / delta_x)
-    print(f"\n{n_x = }")
-    x = np.linspace(-x_max, x_max, n_x, endpoint=False) 
+    n = 1024
+    n_x = n
+    x_max = (n_x / 2) * 5 * um
+    x = np.linspace(-x_max, x_max, n_x, endpoint=False)
+    delta_x = x[1] - x[0]
     # # y-array parameters
-    delta_y = 55 * um / M
-    y_max = 7 * mm / M
-    y_min = -y_max
-    n_y = int((y_max - y_min) / delta_y)
-    print(f"\n{n_y = }")
-    y = np.linspace(-y_max, y_max, n_y, endpoint=False).reshape(n_y, 1)
+    n_y = n
+    y_max = (n_y / 2) * 5 * um
+    y = np.linspace(-y_max, y_max, n_y, endpoint=False)
+    delta_y = y[1] - y[0]
+    y = y.reshape(n_y, 1)
+
+    # # # Matching LAB
+    # # # x-array parameters
+    # delta_x = 55 * um / M
+    # x_max = 35 * mm / M
+    # x_min = -x_max
+    # n_x = int((x_max - x_min) / delta_x)
+    # print(f"\n{n_x = }")
+    # x = np.linspace(-x_max, x_max, n_x, endpoint=False) 
+    # # # y-array parameters
+    # delta_y = 55 * um / M
+    # y_max = 7 * mm / M
+    # y_min = -y_max
+    # n_y = int((y_max - y_min) / delta_y)
+    # print(f"\n{n_y = }")
+    # y = np.linspace(-y_max, y_max, n_y, endpoint=False).reshape(n_y, 1)
 
     # # Parameters from X-ray attenuation calculator   
     # E1 = 22.1629 # keV # Ag k-alpha1 
@@ -150,10 +150,10 @@ if __name__ == '__main__':
 
     M, x, y, n_x, n_y, delta_x, delta_y, E1, k1, kx, ky, R1, R2, z_c, x_c, δ1, μ1, β1, δ2, μ2, β2, height = globals()
 
-    # z_final =  2.5 * m / M # eff propagation distance
+    z_final =  2.5 * m / M # eff propagation distance
 
-    z_actual = 2.5 * m
-    z_final = (z_actual - (z_actual / M)) / M # eff propagation distance
+    # z_actual = 2.5 * m
+    # z_final = (z_actual - (z_actual / M)) / M # eff propagation distance
 
     T1 = thicc(x, y, R1)
     T2 = thicc(x, y, R2)

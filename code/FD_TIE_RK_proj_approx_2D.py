@@ -122,7 +122,7 @@ def propagation_loop(I_0):
 
 def plot_I(I):
     # PLOT Phase contrast I in x, y
-    plt.figure(figsize=(4, 3))
+    plt.figure(figsize=(4.5, 3.5))
     plt.imshow(I, origin='lower')
     plt.colorbar()
     plt.xlabel("x")
@@ -131,7 +131,7 @@ def plot_I(I):
     plt.show()
 
     # PLOT I vs x (a single slice)
-    plt.figure(figsize=(4, 3))
+    plt.figure(figsize=(4.5, 3.5))
     plt.plot(I[np.int(n_y / 2),:])
     plt.xlabel("x")
     plt.ylabel("I(x)")

@@ -211,7 +211,7 @@ if __name__ == '__main__':
     # I_0 = np.load("intensity_x_y.npy")
 
     # PLOT Phase contrast I in x, y
-    plt.figure(figsize=(4, 3))
+    plt.figure(figsize=(4.5, 3.5))
     plt.imshow(I[50:-50], origin='lower')
     plt.colorbar()
     plt.xlabel("x")
@@ -220,7 +220,7 @@ if __name__ == '__main__':
     plt.show()
 
     # PLOT I vs x (a single slice)
-    plt.figure(figsize=(4, 3))
+    plt.figure(figsize=(4.5, 3.5))
     plt.plot(x, I[np.int(n_y / 2),:])
     plt.xlabel("x")
     plt.ylabel("I(x)")

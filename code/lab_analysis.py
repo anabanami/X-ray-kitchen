@@ -141,6 +141,7 @@ if folder == Path('SOD62p5cm/'):
     avg_Rods_7keV = avg_Rods_7keV[:,75:805] # ONLY SOD62p5cm
 else:
     avg_Rods_7keV = avg_Rods_7keV[:,130:600] # ONLY SOD100cm
+# plt.figure(figsize=(4, 3))
 # plt.imshow(avg_Rods_7keV)
 # plt.colorbar()
 # plt.title("RODS average: 7 keV threshold")
@@ -151,6 +152,7 @@ if folder == Path('SOD62p5cm/'):
     avg_Rods_12p5keV = avg_Rods_12p5keV[:,75:805] # ONLY SOD62p5cm
 else:
     avg_Rods_12p5keV = avg_Rods_12p5keV[:,130:600] # ONLY SOD100cm
+# plt.figure(figsize=(4, 3))
 # plt.imshow(avg_Rods_12p5keV)
 # plt.colorbar()
 # plt.title("RODS average: 12.5 keV threshold")
@@ -161,6 +163,7 @@ if folder == Path('SOD62p5cm/'):
     avg_Rods_19keV = avg_Rods_19keV[:,75:805] # ONLY SOD62p5cm
 else:
     avg_Rods_19keV = avg_Rods_19keV[:,130:600] # ONLY SOD100cm
+# plt.figure(figsize=(4, 3))
 # plt.imshow(avg_Rods_19keV)
 # plt.colorbar()
 # plt.title("RODS average: 19 keV threshold")
@@ -272,6 +275,7 @@ if folder == Path('SOD62p5cm/'):
 
     avg_Rod_7keV = sum(np_Rod_7keV) / len(np_Rod_7keV)
     avg_Rod_7keV = avg_Rod_7keV[:,70:810] # ONLY SOD62p5
+    # plt.figure(figsize=(4, 3))
     # plt.imshow(avg_Rod_7keV)
     # plt.colorbar()
     # plt.title("ROD average: 7 keV threshold")
@@ -279,6 +283,7 @@ if folder == Path('SOD62p5cm/'):
 
     avg_Rod_12p5keV = sum(np_Rod_12p5keV) / len(np_Rod_12p5keV)
     avg_Rod_12p5keV = avg_Rod_12p5keV[:,70:810] # ONLY SOD62p5
+    # plt.figure(figsize=(4, 3))
     # plt.imshow(avg_Rod_12p5keV)
     # plt.colorbar()
     # plt.title("ROD average: 12.5 keV threshold")
@@ -286,6 +291,7 @@ if folder == Path('SOD62p5cm/'):
 
     avg_Rod_19keV = sum(np_Rod_19keV) / len(np_Rod_19keV)
     avg_Rod_19keV = avg_Rod_19keV[:,70:810] # ONLY SOD62p5
+    # plt.figure(figsize=(4, 3))
     # plt.imshow(avg_Rod_19keV)
     # plt.colorbar()
     # plt.title("ROD average: 19 keV threshold")
@@ -297,7 +303,9 @@ if folder == Path('SOD62p5cm/'):
     plt.figure(figsize=(4, 3))
     plt.plot(phase_contrast_1D_7keV, label="7 keV")
     plt.title(f"Intensity profile ROD 2: 7 keV threshold, {folder}")
-    plt.grid(color='grey', linestyle=':', linewidth=0.4)  
+    plt.grid(color='grey', linestyle=':', linewidth=0.4)
+    # plt.axvline(22, color='orange', linestyle='--', linewidth=0.9, label="PC left fringe centre")
+    # plt.legend()   
     plt.show()
 
 
@@ -306,6 +314,8 @@ if folder == Path('SOD62p5cm/'):
     plt.plot(phase_contrast_1D_12p5keV, label="12.5 keV")
     plt.title(f"Intensity profile ROD 2: 12.5 keV threshold, {folder}")
     plt.grid(color='grey', linestyle=':', linewidth=0.4)
+    # plt.axvline(22, color='orange', linestyle='--', linewidth=0.9, label="PC left fringe centre")  
+    # plt.legend()
     plt.show()
     
 
@@ -314,6 +324,8 @@ if folder == Path('SOD62p5cm/'):
     plt.plot(phase_contrast_1D_19keV, label="19 keV")
     plt.title(f"Intensity profile ROD 2: 19 keV threshold, {folder}")
     plt.grid(color='grey', linestyle=':', linewidth=0.4)
+    # plt.axvline(22, color='orange', linestyle='--', linewidth=0.9, label="PC left fringe centre")  
+    # plt.legend()
     plt.show()
 
 
@@ -325,6 +337,7 @@ if folder == Path('SOD62p5cm/'):
     plt.plot(diff_1, label="7 keV - 19 keV")
     plt.title(f"Intensity profile ROD 2: differences, {folder}")
     plt.grid(color='grey', linestyle=':', linewidth=0.4)
+    # plt.axvline(22, color='orange', linestyle='--', linewidth=0.9, label="PC left fringe centre")  
     plt.legend()
     plt.show()
 
@@ -336,4 +349,5 @@ if folder == Path('SOD62p5cm/'):
     plt.title(f"Intensity profile ROD 2: differences, {folder}")
     plt.legend()
     plt.grid(color='grey', linestyle=':', linewidth=0.4)
+    # plt.axvline(22, color='orange', linestyle='--', linewidth=0.9, label="PC left fringe centre")
     plt.show()
