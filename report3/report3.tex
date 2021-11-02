@@ -1,4 +1,3 @@
-
 %----------------------------------------------------------------------------------------
 %   PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
@@ -10,7 +9,7 @@
 \usepackage{mathrsfs}
 \usepackage{mathtools}
 \usepackage{dsfont}
-\usepackage[font=scriptsize,labelfont=bf]{caption}
+\usepackage[font=small,labelfont=bf]{caption}
 \usepackage[english]{babel}
 \usepackage{graphicx}
 \newenvironment{Figure}
@@ -86,16 +85,14 @@
 %----------------------------------------------------------------------------------------
 
 \begin{abstract}\label{Abstract}
-This work studies the theoretical perspective of coherent X-ray imaging. One of the objectives of this project is to determine whether a density difference alone can give phase-contrast and, if so, whether the phase-contrast is likely to be detected in real experiments. Using simulations of cylinder-shaped sample materials subjected to X-ray wave-fields of different energies, the importance of material density in phase-contrast imaging is demonstrated. In addition, this report includes details on an experiment showing how phase-contrast of X-ray imaged objects can be enhanced by decreasing the breath of X-ray polychromatic spectra. Lastly, this work investigates possible improvements to the numerical techniques used in the field of X-ray imaging and presents an improved accuracy method for numerical phase-contrast simulations based on the transport-of-intensity equation.
+This work studies the theoretical perspective of coherent X-ray imaging. One of the objectives of this project is to determine whether a density differences within an object can produce phase-contrast and if so, whether the effects would likely be detected in real experiments. Using simulations of cylinder samples subjected to X-ray wave-fields of different energies, the importance of material density in phase-contrast imaging is demonstrated. In addition, this report includes details on an experiment showing how phase-contrast of X-ray images of objects can be enhanced by decreasing the breath of polychromatic spectra. Lastly, this work investigates possible improvements to the numerical techniques used in the field of X-ray imaging and presents a method for improving the accuracy of numerical phase-contrast simulations based on the transport-of-intensity equation.
 \end{abstract}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Introduction}\label{Introduction}
-This chapter describes the theoretical background of the field of X-ray optics. Specifically, the mathematical formalism used in phase-contrast imaging and in phase retrieval. The origin of X-ray optics lies with Maxwell's classical electrodynamics\cite{PagsTutes}. Since Maxwell's equations describe electromagnetic field disturbances as waves, the spatial and temporal evolution of electromagnetic ﬁelds in space can be described by wave optics. Under the wave formalism, there has been substantial progress in the theoretical understanding of the interactions of X-rays with matter, and in the knowledge of how to exploit these interactions experimentally.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{X-ray phase-contrast imaging}\label{PC}
 
-\subsubsection{Helmholtz equation and the Angular spectrum formulation}\label{ASF}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Phase-contrast X-ray imaging theory}\label{PC}
+
+\section{Wave equations and the angular spectrum formulation}\label{ASF}
 The Helmholtz equation represents a time-independent form of the wave equation and it is a central equation of diffraction theory\cite{CH49}\cite{Pags2006}.
 In general, X-ray imaging is done with polychromatic X-rays with non-trivial spectra\cite{CH49}. It is possible to use a method known as the angular spectrum formulation (ASF) on a wave function in order to greatly simplify radiological imaging. The ASF comprises spectral decomposition of a wave-function into monochromatic components. The separation of each component with an individual fixed angular frequency (i.e. a trivial dependence in time), transforms the wave equation into a time-independent partial differential equation (PDE) that is applied individually to each monochromatic component. After the individual analysis of each component is done, a recombination of the monochromatic components results in the complete description of the polychromatic process\cite{CH49}\cite{Pags2006}.
 
@@ -120,16 +117,33 @@ notice that the integral only considers a positive integration range (due to ana
 \therefore \int_{0}^{\infty} \frac{1}{\sqrt{2 \pi}} \left ( \frac{-\omega^2}{c^2}\psi_{\omega}(\mathbf{r}) e^{-i\omega t} -\nabla^{2}\psi_{\omega}(\mathbf{r}) e^{-i\omega t} \right ) d\omega  
  = 0,
 \end{equation}
+\begin{equation}
+\therefore \int_{0}^{\infty} \frac{-1}{\sqrt{2 \pi}} e^{-i\omega t} d\omega \left ( k^2 + \nabla^{2} \right ) \psi_{\omega}(\mathbf{r}) 
+ = 0,
+\end{equation}
 \begin{equation}\label{eq:6}
-\left ( k^2 + \nabla^{2} \right ) \psi_{\omega}(\mathbf{r})  
+\therefore \left ( k^2 + \nabla^{2} \right ) \psi_{\omega}(\mathbf{r})  
  = 0,
 \end{equation}
 where the wave vector $k = \omega/c$.
 
-\subsubsection{Paraxial fields}\label{Paraxial}
-In most situations involving phase-contrast imaging, X-ray fields behave as paraxial fields. Electromagnetic (EM) energy in this context is concentrated within a small region about the beam axis. A beam is an EM wave propagating in free space with small divergence (i.e. spread) away from the propagation axis, hence the origin of the name \textit{paraxial}.
-In the previous section $\Psi(\mathbf{r},t)$ described a complex scalar wave-field. In this section the paraxiality condition is added to this wave-field.
-Under this approximation the complex disturbance $\psi_{\omega}(\mathbf{r})$ present in the Helmholtz equation is expressed as a product of a z-directed plane wave $\mathrm{exp}(ikz)$ and a perturbing envelope $\Phi(\mathbf{r})$\cite{PagsTutes}\cite{CH49}
+The ASF solves the propagation problem in the following way. Suppose that a coherent source of light is illuminating an object. If we want to know the value of the time independent wave-field $\psi_{\omega}(\mathbf{r_{\perp}}, 0)$ at a point downstream from the illuminated object, we need to use a propagator to evolve the plane wave from one position (ex. $z = 0$) to another (ex. $z = z_0$) along the propagation axis $z$. The propagation problem may be solved by using an operator known as the ``free space propagator" given by
+\begin{equation}\label{eq:6.2}
+U(x, y, z_0) = \mathrm{exp} \left ( i k_z z_0 \right ),
+\end{equation}
+where $k_z = \sqrt{k^2 - k^{2}_{x} - k^{2}_{y}}$. Multiplying equation \ref{eq:6.2} with the time independent wave-field results in the propagated wave-field below
+\begin{equation}\label{eq:6.5}
+\psi_{\omega}(\mathbf{r_{\perp}}, z_0) = \psi_{\omega}(\mathbf{r_{\perp}}, 0) \mathrm{exp}(i k_z z_0), 
+\end{equation}
+we can repeat the procedure above to find the value of the wave-field for each and every coordinate describing the wavefield in Fourier space. The full ASF is  written as
+\begin{equation}\label{eq:6.9}
+\psi_{\omega}(\mathbf{r_{\perp}}, z_0) = \mathscr{F}^{-1} \left ( \mathscr{F} \left ( \psi_{\omega}(\mathbf{r_{\perp}}, 0) \right ) \mathrm{exp}(i k_z z_0) \right ), 
+\end{equation}
+where $\mathscr{F}$ and $\mathscr{F}^{-1}$ denote the Fourier transformation and it's inverse operation. We can now write the time independent wave-field at any position along the propagation axis $z$, therefore we have found the exact analytical solution to the Helmholtz equation in \ref{eq:6}.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Paraxial fields}\label{Paraxial}
+In most situations involving phase-contrast imaging, X-ray fields behave as paraxial fields. Electromagnetic (EM) energy in this context is concentrated within a small region about the beam axis. A beam is an EM wave propagating in free space parallel to the propagation axis, hence the origin of the name \textit{paraxial}.
+In the previous section $\Psi(\mathbf{r},t)$ described a complex scalar wave-field. In this section the paraxiality condition is added to this wave-field. Figure \ref{fig:1.1} represents a light beam as paraxial.
 \begin{equation}\label{eq:7}
 \psi_{\omega}(\mathbf{r}) = \Phi(\mathbf{r})\mathrm{exp}(ikz),
 \end{equation}
@@ -139,6 +153,7 @@ Under this approximation the complex disturbance $\psi_{\omega}(\mathbf{r})$ pre
 \captionof{figure}{A cartoon of a paraxial wave-field $\psi_{\omega}(\mathbf{r})$ displaying beam propagation properties along the z-axis. The slowly varying complex envelope is modulated by a carrying plane wave.}
 \label{fig:1.1}
 \end{Figure}
+Under the paraxial approximation the complex disturbance $\psi_{\omega}(\mathbf{r})$ present in the Helmholtz equation is expressed as a product of a z-directed plane wave $\mathrm{exp}(ikz)$ and a perturbing envelope $\Phi(\mathbf{r})$\cite{PagsTutes}\cite{CH49}
 the longitudinal variation of the complex envelope $\Delta z = \lambda = 2 \pi/k$ is required to be smaller than the complex envelope itself
 \begin{equation}\label{eq:8}
 \frac{\Delta \Phi(\mathbf{r})}{\Phi(\mathbf{r})} \leq 1
@@ -148,7 +163,8 @@ using equation (\ref{eq:8}) and the longitudinal variation $\Delta z$  in the He
 \left (\nabla_{\perp}^{2} + 2 i k \frac{\partial }{\partial z}\right ) \Phi(\mathbf{r}_{\perp}, z) = 0
 \end{equation}
 
-\subsubsection{Refractive index and the projection approximation}\label{PA}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Refractive index and the projection approximation}\label{PA}
 In the presence of static, non-magnetic, scattering material media the complex scalar X-ray wave-field can still be studied by using the inhomogeneous Helmholtz equation 
 \begin{equation}\label{eq:10}
 \left ( k^2 n^2 (\mathbf{r}) + \nabla^{2}  \right )\Psi(\mathbf{r}) = 0,
@@ -167,48 +183,48 @@ where $|\delta|, |\beta| << 1$. Using the complex refractive index in the inhomo
 \captionof{figure}{Schematic diagram of the projection approximation adapted from references \cite{CH49} and \cite{Pags2006}. The sample is contained within the space between $z = 0$ and $z = z_0$. The sample is described by its refractive index $n(\mathbf{r})$ which differs from the the refractive index of the air volume that surrounds the sample. In this figure one can see that the path of X-rays passing through an object can be described by defining a surface (also known as the contact plane) immediately downstream from the irradiated object (i.e. $z = z_0$). at which the transferred transverse intensity and phase changes of the incident X-rays are imprinted\cite{CH49}. }
 \label{fig:1.2}
 \end{Figure}
-
-The projection approximation assumes that X-ray flow may be well approximated by straight lines parallel to z\cite{PagsTutes} and that most X-rays passing through an object do not actually interact with the sample material (i.e. minimal to no scattering occurs within the sample, a fair assumption due to small magnitude of the complex \textit{refractive index} of X-rays). Neglecting scattering effects is mathematically equivalent to discarding the transverse Laplacian term in equation (\ref{eq:9})\cite{CH49}, in addition, when X-ray--matter interaction are considered then we utilise the inhomogeneous paraxial Helmholtz equation
+The projection approximation assumes that X-ray flow may be well approximated by straight lines parallel to z\cite{PagsTutes} and that most X-rays passing through an object do not actually interact with the sample material. In figure \ref{fig:1.2} minimal to no scattering occurs within the sample, this a fair assumption due to small magnitude of the complex \textit{refractive index} of X-rays. Neglecting scattering effects is mathematically equivalent to discarding the transverse Laplacian term in equation (\ref{eq:9})\cite{CH49}, in addition, when X-ray--matter interaction are considered then we utilise the inhomogeneous paraxial Helmholtz equation
 \begin{equation}\label{eq:13}
 \left ( 2 i \frac{\partial }{\partial z} + k ( n^2 (\mathbf{r}) - 1 )\right ) \Phi(\mathbf{r}) = 0.
 \end{equation}
 
-\subsubsection{Intensity and phase-shift}\label{Intensity and phase}
-Refraction is a property that may be augmented by the intensity attenuation due to the imaged object. This latter quantity may be obtained by taking the squared
-modulus of equation (\ref{eq:12}), to give the \textit{Beer-Lambert law}\cite{PagsTutes}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Intensity and phase-shift}\label{intensity and phase}
+Since absorption is the primary contrast mechanism in X-ray imaging, the beam intensity may be obtained by taking the squared modulus of equation (\ref{eq:12}), to give the \textit{Beer-Lambert law}\cite{PagsTutes}
 \begin{equation}\label{eq:14}
 I(\mathbf{r}_{\perp}, z = z_0) = I^{\mathrm{in}} e^{-\mu T(\mathbf{r}_{\perp})},
 \end{equation}
-where $T(\mathbf{r}_{\perp})$ is the projected thickness of the object in the direction of the beam propagation, and, $I^{\mathrm{in}}$ the incident light intensity to the object. This expression is also known as the ``contact image ". Equation (\ref{eq:14}) relates the imaginary part of the refractive index $\beta$ to the \textit{linear attenuation coefficient} $\mu = 2k\beta$. 
+where $T(\mathbf{r}_{\perp})$ is the projected thickness of the object in the direction of the beam propagation, and $I^{\mathrm{in}}$ the incident light intensity to the object. This expression is also known as the ``contact image ". Equation (\ref{eq:14}) relates the imaginary part of the refractive index $\beta$ to the \textit{linear attenuation coefficient} $\mu = 2k\beta$. 
 Since we are working with a wave picture, refraction is associated with wave-front deformation rather than ray deflection, therefore the projection approximation term involving the refractive index $\delta$ (refractive properties of the sample), quantifies the deformation of the X-ray wave-fronts due to passage through the sample. Physically, for each fixed transverse coordinate $(x, y)$, phase-shifts (and the associated wave-front deformations) are continuously accumulated along energy-flow streamlines\cite{PagsTutes}.
 \begin{equation}\label{eq:15}
 \Delta \phi(\mathbf{r}_{\perp}) = -k \delta T(\mathbf{r}_{\perp}),
 \end{equation}
 where $k$ is the X-ray wave-number, and $\delta$ the refractive index decrement.
 
-\subsubsection{Transport-of-intensity equation}\label{TIE}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Transport-of-intensity equation}\label{TIE}
 The transport-of-intensity equation (TIE) expresses the intensity and phase evolution of a paraxial monochromatic scalar electromagnetic or matter wave on propagation\cite{Pags2002}. The TIE is also used to quantify the contrast (i.e. refractive (phase) effects) present in propagation-based X-ray phase-contrast images\cite{PagsTutes}.
-More concisely, the TIE physically describes the change in the light intensity (\ref{eq:14}) and phase (\ref{eq:15}) as the divergence of the transverse energy-flow vector known as the Poynting vector $(\textbf{S})$. If the divergence of this vector is positive, (i.e. the wave-field is locally expanding), optical energy moves away from the local optic axis and so the longitudinal derivative of
-intensity will be negative. The converse occurs if the divergence of the Poynting vector is negative, and so the longitudinal derivative of intensity will be positive\cite{PagsTutes}.
+More concisely, the TIE physically describes the change in the light intensity (\ref{eq:14}) due to phase gradients (\ref{eq:15}) as the divergence of the transverse energy-flow vector known as the Poynting vector $(\textbf{S})$. If the divergence of this vector is positive, (i.e. the wave-field is locally expanding), optical energy moves away from the local optic axis and so the longitudinal derivative of
+intensity will be negative. The converse occurs if the divergence of the Poynting vector is negative, and so the longitudinal derivative of intensity will be positive\cite{PagsTutes}. The TIE is given by
 \begin{equation}\label{eq:16}
--\nabla_{\perp} \cdot [I(\mathbf{r}) \nabla_{\perp} \phi(\mathbf{r})] = k \frac{\partial I (\mathbf{r})}{\partial z}.
+-\nabla_{\perp} \cdot [I(\mathbf{r}) \nabla_{\perp} \phi(\mathbf{r})] = k \frac{\partial I (\mathbf{r})}{\partial z},
 \end{equation}
 where $k$ is the wave-number, $I(\mathbf{r})$ is the intensity and $\phi(\mathbf{r})$ is the phase of the X-ray beam, the Poynting vector $\textbf{S} \propto I(\mathbf{r}) \nabla_{\perp} \phi(\mathbf{r})$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{X-ray phase retrieval}\label{PR}
+\section{The inverse problem to phase-contrast: X-ray phase retrieval}\label{PR}
 Decoding of X-ray phase-contrast images is essentially the reverse problem to phase-contrast imaging and it is known as \textit{phase retrieval}. 
-In general inverse problems are more complex than forward problems. Often inverse problems are unsolvable, and, even if there exist possible solutions to these problems, these may not be unique or stable with regards to realistic experimental conditions. 
-Phase retrieval seeks to reconstruct both the intensity and phase of the input field, given only the intensity of the output field of the imaging system\cite{PagsTutes}\cite{Pags2002}. Under the projection approximation (described in section \ref{PA}), it is clear that both the intensity (\ref{eq:14}) and the phase (\ref{eq:15}) on the contact plane (Figure \ref{fig:2}) are both described by the projected thickness ($T(\mathbf{r}_{\perp})$) of the sample object. Paganin et al.(2002) developed a fast and deterministic method for quantitative phase extraction\cite{Pags2002} using the TIE to propagate a wave-field's intensity (\ref{eq:14}) and phase (\ref{eq:15}) by a sufficiently small distance away from the sample.
+In general inverse problems are more complex than forward problems. Often inverse problems are unsolvable, and even if there exist possible solutions to these problems, these may not be unique or stable with regards to realistic experimental conditions. 
+Phase retrieval seeks to reconstruct both the intensity and phase of the input field, given only the intensity of the output field of the imaging system\cite{PagsTutes}\cite{Pags2002}. Under the projection approximation (described in section \ref{PA}), it is clear that both the intensity (\ref{eq:14}) and the phase (\ref{eq:15}) on the contact plane (Figure \ref{fig:1.2}) are both described by the projected thickness ($T(\mathbf{r}_{\perp})$) of the sample object. Paganin et al. (2002) developed a fast and deterministic method for quantitative phase extraction\cite{Pags2002} using the TIE to propagate a wave-field's intensity (\ref{eq:14}) and phase (\ref{eq:15}) by a sufficiently small distance away from the sample. This algorithm however has strong limitations in practice, because it can only be used on a single homogeneous sample material.
 Substituting the contact plane intensity and phase of the illuminating beam at the contact plane into equation (\ref{eq:16}) returns a non linear equation in $T(\mathbf{r}_{\perp})$
 \begin{equation}\label{eq:17}
 - \frac{\delta}{\mu} I^{\mathrm{in}} \nabla^{2}_{\perp} e^{-\mu T(\mathbf{r}_{\perp})} = \frac{\partial}{\partial z}I(\mathbf{r}_{\perp}, z=0).
 \end{equation}
-This phase retrieval method\cite{Pags2002} approximates the right hand side of equation (\ref{eq:17}) by the first order finite difference formula
+The phase retrieval method\cite{Pags2002} approximates the right hand side of equation (\ref{eq:17}) by the first order finite difference formula
 \begin{equation}\label{eq:18}
 \frac{\partial}{\partial z}I(\mathbf{r}_{\perp}, z=0) \approx \frac{I(\mathbf{r}_{\perp}, z=z_0) - I^{\mathrm{in}} e^{-\mu T(\mathbf{r}_{\perp})}}{z_0},
 \end{equation}
-replacing equation (\ref{eq:18}) into equation (\ref{eq:16}) and rearranging to find the ratio of the intensity at the detector plane (i.e.the phase-contrast image $I(\mathbf{r}_{\perp}, z = z_0)$) to the intensity initially incident to the object
+then replacing equation (\ref{eq:18}) into equation (\ref{eq:16}) and rearranging to find the ratio of the intensity at the detector plane (i.e.the phase-contrast image $I(\mathbf{r}_{\perp}, z = z_0)$) to the intensity initially incident to the object, giving
  \begin{equation}\label{eq:19}
 \left (\frac{- z_0 \delta}{\mu}\nabla^{2}_{\perp} + 1 \right )e^{-\mu T(\mathbf{r}_{\perp})} = \frac{I(\mathbf{r}_{\perp}, z=z_0)}{I^{\mathrm{in}}}.
 \end{equation}
@@ -217,93 +233,155 @@ The construction of the phase retrieval algorithm requires that the contact imag
 &I^{\mathrm{in}} e^{-\mu T(\mathbf{r}_{\perp})} = \frac{I^{\mathrm{in}}}{2 \pi} \int \int \mathscr{F} \left \{ e^{-\mu T(\mathbf{r}_{\perp})} \right \} e^{i \mathbf{k}_{\perp}\cdot \mathbf{r}_{\perp}} d \mathbf{k}_{\perp}
 \\&I(\mathbf{r}_{\perp}, z=z_0) = \frac{1}{2 \pi}  \int \int \mathscr{F} \left \{ I (\mathbf{r}_{\perp}, z = z_0) \right \} e^{i \mathbf{k}_{\perp}\cdot \mathbf{r}_{\perp}} d \mathbf{k}_{\perp}
 \end{align}
-where $\mathscr{F}\left \{ \right \}$ represents Fourier transformation. Substituting these equations in equation (\ref{eq:19})
+where $\mathscr{F}\left \{ \right \}$ represents Fourier transformation. Substituting these equations in equation (\ref{eq:19}) gives
 \begin{equation}\label{eq:21}
 \mathscr{F}\left \{ e^{-\mu T(\mathbf{r}_{\perp}} \right \} = \mu \frac{\mathscr{F}\left \{ I(\mathbf{r}_{\perp}, z=z_0)\right \}/I^{\mathrm{in}}}{z_0 \delta |\mathbf{k}_{\perp}|^{2} + \mu}.
 \end{equation}
-Taking the inverse Fourier transform of equation (\ref{eq:21}) and solving for $T(\mathbf{r}_{\perp})$
+Taking the inverse Fourier transform of equation (\ref{eq:21}) enables us to solve for the single material's thickness: $T(\mathbf{r}_{\perp})$:
 \begin{equation}\label{eq:22}
 T(\mathbf{r}_{\perp}) = - \frac{1}{\mu} \mathrm{log}_{e} \left ( \mathscr{F}^{-1} \left \{ \mu \frac{ \mathscr{F} \left \{I(\mathbf{r}_{\perp}, z=z_0) \right \} /  I^{\mathrm{in}}}{z_0 \delta |\mathbf{k}_{\perp}|^{2} + \mu}  \right \} \right ).
 \end{equation}
-The derivation of this algorithm requires the use of the Fresnel diffraction integral to show that the intensity downstream from a weakly refracting object, is related to the intensity at infinity $I_{\infty}$ and the magnification resultant from using collimated illumination\cite{Pags2002}.
+The derivation above assumed an incident plane wave. This allows us to use the magnification $M$ resultant from using collimated illumination (point source illumination)\cite{Pags2002}.
 \begin{equation}\label{eq:23}
 I_{\mathrm{R_{1}}}(\mathbf{r_{\perp}}, z) = \frac{1}{M^2} I_{\infty} \left ( \frac{\mathbf{r_\perp}}{M}, \frac{z}{M} \right ),
 \end{equation}
-where $M$ is the image magnification obtained from point source illumination. With equation (\ref{eq:23}), equation (\ref{eq:22}) can be transformed into a form that suits point source illumination\cite{Pags2002}
+where $M = \mathrm{SID/SOD}$ is the ratio of the source-to-image distance (SID) and the source-to-object (SOD) distance. With equation (\ref{eq:23}), equation (\ref{eq:22}) can be transformed into a form that suits point source illumination\cite{Pags2002}
 \begin{equation}\label{eq:24}
 T(\mathbf{r}_{\perp}) = - \frac{1}{\mu} \mathrm{log}_{e} \left ( \mathscr{F}^{-1} \left \{ \mu \frac{ \mathscr{F} \left \{M^2 I(M\mathbf{r}_{\perp}, z=z_0) \right \} /  I^{\mathrm{in}}}{z_0 \delta |\mathbf{k}_{\perp}|^{2}/M + \mu}  \right \} \right ).
 \end{equation}
-this projected thickness is related to the intensity and phase of the radiation at the exit surface of the sample of interest (i.e. the projected thickness of a homogeneous material sample is obtained from a single propagation-based phase-contrast image).
+This projected thickness is related to the intensity and phase of the radiation at the exit surface of the sample of interest (i.e. the projected thickness of a homogeneous material sample is obtained from a single propagation-based phase-contrast image).
 In simple terms, the Paganin et al. (2002) algorithm can be thought as bringing into focus the physically defocused images that are obtained using point-projection imaging\cite{Pags2002}.
 It is important to remark that information on the properties of objects may be lost on the images obtained with X-rays. Even though X-ray imaging has strong dependence on material density and thickness\cite{CH49}, the projection approximation fails to disambiguate between these two parameters, and this issue can in some instances result in an incomplete description of the imaged material.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{X-ray polychromatic spectra}\label{poly}
-As explained in section \ref{ASF}, X-ray imaging is done with polychromatic X-rays with non-trivial spectra\cite{CH49}
-X-rays are commonly produced by a phenomenon known as X-ray florescence (XRF). A heated filament emits electrons by thermionic emission, these electrons are accelerated by a high voltage and collide with a metal target. In simple terms, the accelerated electrons interact with the atoms comprising the metal target by (i) impacting a shell electron in the target and dislodging it causing photoelectron emission, (ii) having their path deviated without having any actual contact with the target atoms, (iii) directly impacting the nucleus.
 
-Characteristic X-rays are created by the first interaction described above. As the incident electron releases an inner shell electron, this leaves a vacancy in the atom's inner shell. The vacancy is quickly filled by an outer shell electron which causes photon emission with an energy equal to the energy difference between the inner and outer shells. The term ``characteristic" refers to the fact that each element has a distinct pattern of X-ray photoelectron emission.
-The second interaction described above is known as Bremsstrahlung (Background/ Breaking) radiation. A source of Bremsstrahlung radiation occurs due to incident electrons interacting with the nuclear electric field. The electron paths may be deflected or decelerated and recaptured by the atom into an energy electron shell. 
-\begin{Figure}
-\centering
-\includegraphics[width=\linewidth]{characteristic_Bremsstrahlung.pdf}
-\captionof{figure}{Cartoons of accelerated electrons interacting with target atoms. In sub-figures: (1) and (2), characteristic X-ray emission is represented by (1) an accelerated electron hitting an inner shell electron expelling it from the atom, while an outer shell electron promptly moves inward to fill the inner shell gap (2) releasing a characteristic X-ray. Sub-figure: (3) represents a visualisation of the types of possible Bremsstrahlung radiation, ranging from low energy/distant, to high energy interactions between the incident accelerated electrons and the atomic nucleus.}
-\label{fig:1.3}
-\end{Figure}
-\begin{Figure}
-\centering
-\includegraphics[width=\linewidth]{W_poly_spectrum.pdf}
-\captionof{figure}{Original image by M Kitchen (2021). Histograms of photon counts versus energy for the polychromatic spectrum of the tungsten target used in the Monash X-ray imaging laboratory. The energy spread for both sub-figures (a) and (b) is approximately $35$ kV, sub-figure (a) is an unfiltered spectrum while sub-figure (b) was filtered with a piece of Aluminium of thickness $0.5$ mm. In the lower energy region of sub-figure (a), three characteristic X-ray peaks can be seen, these energy peaks are approximately centred at $8.1$ kV, $9.7$ kV and $11.2$ kV from left to right. The Bremsstrahlung peak is centred at approximately $21$ kV. In the case of sub-figure (b) the filtered spectrum aims to simulate a monochromatic energy peak. This peak is approximately centred at $24.6$ kV. In the lower energy region of sub-figure (b), a smaller undesirable peak is centred approximately at $6$ kV.}
-\label{fig:poly}
-\end{Figure}
+\chapter{The importance of density for phase-contrast}\label{density}
 
-Some simulations in this work used selected energy values visible in figure \ref{fig:poly} (i.e. the three characteristic peaks and the Bremsstrahlung peak of tungsten) to quantify potential fringe shifting due to energy dispersion (see section \ref{poly}).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\chapter{Simulations}\label{Simulations}
-To determine whether density differences contribute to phase-contrast and if so, whether this contribution is actually detectable in a real experiment, I created several simulations of cylinder-shaped sample materials and subjected these samples to X-ray wave-fields of different energies. In some of my simulations, I used a single cylinder made of a homogeneous material. In others I used two embedded concentric cylinder-shaped samples of materials with either an equal chemical composition and different densities or, different chemical compositions, and densities. With these simulations I demonstrate the importance of material density in phase-contrast imaging,  by 1) showing how distinctly, phase-contrast arises between material boundaries and 2) whether the observed phase-contrast is density-dependent. 
-Here I also present details of my investigations on the undesirable effects produced by the use of X-ray polychromatic spectra in X-ray phase-contrast imaging.
-These investigations are numerical and experimental. I show below that phase-contrast X-ray imaging is improved when X-ray polychromatic spectra used in imaging are narrow.
-I also describe below an improved accuracy method for numerical phase-contrast simulations based on the transport-of-intensity equation using a higher order derivative approximation algorithm known as fourth-order Runge-Kutta.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Methods}\label{Methods}
 For the single cylinder simulations I used the projection approximation to solve the transport-of-intensity equation (TIE). The TIE produces observable changes on a wave-field's intensity (\ref{eq:14}) and phase (\ref{eq:15}), when these are used as initial conditions in the propagation problem. For the two-cylinder simulations, I also use the projection approximation, but this time I model the propagation of the monochromatic X-ray wave-field using the angular spectrum formulation (ASF) (section \ref{ASF}). The ASF uses Fourier decomposition of wave-fields at a single plane into distinct component plane waves. Each plane wave component is propagated through the Fourier domain to a destination plane, then the propagated wave-field components are reconstructed via an inverse spatial Fourier transform\cite{Goodman}. To implement the ASF, I use the X-ray imaging XRI library, since the existing algorithm has already implemented several fixes to undesirable instabilities that can appear in the simulations. The XRI library was built by the Monash X-ray imaging group.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulating a single homogeneous cylinder}\label{Single cylinder}
-To find the optical parameters of the sample materials (i.e. $\delta$ and $\mu$) under certain energy X-rays, I use the X-ray imaging group's ``X-ray attenuation calculator" which employs the values recorded by NIST in database 66: X-Ray Form Factor, Attenuation, and Scattering Tables\cite{NIST}. The ``X-ray attenuation calculator" makes these values easily accessible via a GUI. Note that I used this tool for all my simulations.
+To find the optical parameters of the sample materials (i.e. $\delta$ and $\mu$) under certain energy X-rays, I use the X-ray imaging group's ``X-ray attenuation calculator" which employs the values recorded by the National Institute of Standards and Technology (NIST) in their database number 66: X-Ray Form Factor, Attenuation, and Scattering Tables\cite{NIST}. The ``X-ray attenuation calculator" makes these values easily accessible via a GUI. Note that I used this tool for all my simulations.
 
-For the single material cylinder simulation, I solved the TIE in two-dimensions using the projection approximation to establish my initial conditions.  Originally, my code discretised a two-dimensional space as an array with dimensions $x, y = 1024, 512$. I first attempted to solve the TIE in Fourier space. To calculate the wave-field's derivative terms in equation (\ref{eq:16}), I used the Fourier derivative theorem to write the derivatives. I defined functions describing the geometry and, optical properties (i.e. refractive index: $\delta(x, y, z)$ and $\mu(x, y, z)$) of the simulated cylinder. Both $\delta$ and $\mu$ functions use a sigmoid function with adjustable gradient to slightly blur the edge of the cylinder and, avoid instability while calculating the intensity (\ref{eq:14}) and phase (\ref{eq:15}). This method is slow due to the Fourier derivatives, and the output intensity profile after propagation does not appear very stable as several oscillations can be seen in figure \ref{fig:5}. To fix the instability issue, I adjusted the ratio of the spacings in my discretised space several times to make sure that the Nyquist mode of the TIE was resolved adequately. Nevertheless I was unable to obtain a completely smooth, and realistic looking intensity profile in figure \ref{fig:5}.
+For the single material cylinder simulation, I solved the TIE in two-dimensions using the projection approximation to establish my initial conditions.  Originally, my code discretised a two-dimensional space as an array with dimensions $x, y = 1024, 512$. I first attempted to solve the TIE in Fourier space. To calculate the wave-field's derivative terms in equation (\ref{eq:16}), I used the Fourier derivative theorem to write the derivatives. I defined functions describing the geometry and optical properties (i.e. refractive index: $\delta(x, y, z)$ and $\mu(x, y, z)$) of the simulated cylinder. Both $\delta$ and $\mu$ functions used a sigmoid function with adjustable gradient to slightly blur the edge of the cylinder, and avoid instability while calculating the intensity (\ref{eq:14}) and phase (\ref{eq:15}). This method is slow due to the Fourier transforms used, and the output intensity profile after propagation does not appear very stable. To fix the instability issue, I adjusted the ratio of the spacings in my discretised space several times to make sure that the Nyquist mode of the TIE was resolved adequately. Nevertheless I was unable to obtain a completely smooth, and realistic looking intensity profile in figure \ref{fig:5}.
 
 To complement this investigation, I solved the TIE in position space using finite differences (see figure \ref{fig:6}). In this method I used \texttt{numpy.gradient} to evaluate each derivative and \texttt{scipy.ndimage.laplace} to evaluate the phase Laplacian term in the TIE. This time my code discretised the two-dimensional space as a 2D array $x, y = 1024, 1024$. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Simulating two concentric homogeneous cylinders}\label{2 cylinders}
-I simulated two concentric cylinders made of two different homogeneous materials using the angular spectrum formulation propagation algorithm in the xri library (ASF). I defined a function for the projected thickness of the sample cylinders. The thickness function uses an adjustable width Gaussian filter to slightly blur the edge of each cylinder which prevents numerical instability while calculating the parameters required by the ASF propagation algorithm. The parameters calculated are $\delta T(\mathbf{r}_{\perp})$ and $\beta T(\mathbf{r}_{\perp})$, corresponding to the refraction and absorption parameters respectively. I calculate these quantities for each of the two cylinders in each simulation. Then I combined these quantities together because of the concentric construction of the cylinders.
+I simulated two concentric cylinders made of two different homogeneous materials using the angular spectrum formulation propagation algorithm in the xri library (ASF). I defined a function for the projected thickness of the sample cylinders. The thickness function uses an adjustable width Gaussian filter to slightly blur the edge of each cylinder which prevents numerical instability while calculating the parameters required by the ASF propagation algorithm. The parameters calculated are $\delta T(\mathbf{r}_{\perp})$ and $\beta T(\mathbf{r}_{\perp})$, corresponding to the refraction and absorption parameters, respectively. I calculate these quantities for each of the two cylinders in each simulation. Then I combined these quantities together because of the concentric construction of the cylinders.
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Imaging brain structures}\label{Brainz}
-The optical properties of grey and white matter are extremely similar. However, it is known that there is a small difference in the values of the attenuation coefficients of these materials. Computerized tomography (CT) brain imaging has been reported to yield clearly demarcated tissue borders at the grey/white matter boundaries\cite{Beltran2}. To determine if density differences alone produce phase-contrast when imaging extremely similar brain materials, I simulated grey and white matter. I used experimental grey and white matter densities reported in the ``IT’IS Database for thermal and electromagnetic parameters of biological tissues" (see reference \cite{ITIS}). Once again, I used the ``X-ray attenuation calculator" to find the complex refractive index parameters of the whole brain (i.e. $\delta_B$ and $\mu_B$). 
+I used experimental grey and white matter densities reported in the ``IT’IS Database for thermal and electromagnetic parameters of biological tissues" (see reference \cite{ITIS}). Once again, I used the ``X-ray attenuation calculator" to find the complex refractive index parameters of the whole brain (i.e. $\delta_B$ and $\mu_B$). 
 
 In my second model, I used the attenuation coefficients for both materials $\mu_{\mathrm{GM}}$ for grey matter, and $\mu_{\mathrm{WM}}$ for white matter. These values were obtained from CT imaging of rabbit and kitten brain samples. The data was acquired at Japan's SPring-8 synchrotron radiation facility using an X-ray energy of $E = 24$ keV and a sample-to-detector distance of $5$ m\cite{Linda}.
 
-Using the tools described above, I created two different simulations. I first, calculated an approximate estimate for the grey and white matter refractive index decrements ($\delta_{\mathrm{GM}}$ and $\delta_{\mathrm{WM}}$). In the case of my first simulation, I modelled the refractive index decrements as proportional to the ratio of the attenuation coefficient for the full brain obtained from reference \cite{NIST} and the density of the grey or white matter values reported in reference \cite{ITIS} (for example for grey matter the calculation was: $\delta_{\mathrm{GM}} = \frac{\mu_B}{\rho_{\mathrm{GM}}} \delta_B$). In contrast, my second model considered the refractive index decrement to be proportional to the ratio between the attenuation coefficient value for the full brain and the value corresponding to either the grey or white matter attenuation coefficients(for example the calculation for grey matter was: $\delta_{\mathrm{GM}} = \frac{\mu_B}{\mu_{\mathrm{GM}}} \delta_B$). 
+Using the tools described above, I created two different simulations. I first, calculated an approximate estimate for the grey and white matter refractive index decrements ($\delta_{\mathrm{GM}}$ and $\delta_{\mathrm{WM}}$). In the case of my first brain materials simulation, I modelled the refractive index decrements as proportional to the ratio of the attenuation coefficient for the full brain (subscript: B) and the \textbf{density} of the grey (subscript: GM) or white matter (subscript: WM) values, respectively. For example for grey matter, the calculation was: $\delta_{\mathrm{GM}} = \frac{\mu_B}{\rho_{\mathrm{GM}}} \delta_B$. In contrast, my second model considered the refractive index decrement to be proportional to the ratio between the attenuation coefficient value for the full brain and the value corresponding to either the grey or white matter attenuation coefficients (for example the calculation for grey matter was: $\delta_{\mathrm{GM}} = \frac{\mu_B}{\mu_{\mathrm{GM}}} \delta_B$). 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{The problems with polychromatic spectra}\label{poly}
-Given that the mathematical background of phase-contrast imaging requires the assumption of wave-field monochromaticity (see \ref{ASF}), this work investigates how phase-contrast of X-ray imaged objects can be enhanced by decreasing the range of polychromatic spectra. 
-First, I carried out simulations of monochromatic spectra throughout the whole energy range of Tungsten at $35$ kV. The simulations were created using three different methods of propagation based phase-contrast, the angular spectrum formulation (ASF) (see \ref{ASF}), the transport-of-intensity equation implemented using fourth order Runge-Kutta (TIE+RK) (see \ref{TIE+RK}) and the conventional transport-of-intensity equation (TIE) (see \ref{TIE}). Both the ASF and the TIE+RK methods display phase-contrast fringes shifting as the energy threshold used in the phase-contrast simulation is changed. The conventional TIE method did not produce any fringe shifts. 
+\section{Results and Discussion}\label{Results}
 
-My supervisor and I verified the simulation results in the laboratory. The laboratory tests involved only the specific unfiltered polychromatic spectrum of a tungsten target. The X-ray imaged object was a perspex rod with a diameter $D = 9.8$ mm. The source-to-detector distance (SDD) used in our tests was $2.5010 \pm 0.0005$ m as measured with a laser meter. We used magnifications $M = 2.5$X and $M = 4.0$X, which resulted in the effective propagation distances $z_{\mathrm{eff}} = 0.6$ m and $z_{\mathrm{eff}} = 0.47$ m for each magnification respectively. The power used in the X-ray target was set to $P = 20~\mathrm{W}$. The detector used was a photon counting detector that can be configured with a sensitivity threshold energy. This energy threshold was changed three times during our experiment to test different width spectra. The energy thresholds used energy values that extended the width of the spectrum to cover the Bremsstrahlung peak and distinct characteristic X-rays as per the unfiltered spectrum in figure \ref{fig:poly} (a).
-The phase-contrast imaging yielded by the three energy thresholds were compared, and the results demonstrated that spectra with an narrower energy range yields better quantitative results than that produced by a broad bandwidth spectrum. 
-In practice, X-ray imaging methods attempt to make the beam as monochromatic as possible by means of filtering the spectrum or by setting detector sensitivity to only match certain frequencies. This work shows that the commonly used methods to filter polychromatic spectra are inadequate because the phase-contrast fringes resulting from different mean energy spectra do not fall in the same position due to energy dispersion.
+\subsection{Simulating a single homogeneous cylinder}\label{cylinder}
+The phase-contrast images visible in figure \ref{fig:5} were obtained using a Fourier derivative transport-of-intensity (TIE) method. This method was not able to simultaneously match the expected phase-contrast peak height, at this energy while at the same time remaining fully stable. The parameters used to obtain this image were chosen to match a silver source, specifically the k-alpha 1 transition. The simulated material for this cylinder is water. As explained in section \ref{Single cylinder} the optical parameters for these simulations were obtained from the ``X-ray attenuation calculator".
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{Fourier_intensity_profile.pdf}
+\captionof{figure}{Phase contrast image in 2D(a), phase-contrast image in 1D (b), and an enhanced view of (b) showing ringing artefacts (c). These plots were obtained using the Fourier TIE method. The parameters used to obtain this images were an X-ray energy $E = 22.1629$ keV (corresponding to a Ag k-alpha 1 source), a refractive index decrement for the water cylinder of $\delta = 4.68141\times10^{-7}$ and an attenuation coefficient of $\mu = 64.38436~\mathrm{m^{-1}}$. The cylinder radius was $R = 6.375$ mm. A sigmoid function blurred $0.5$ pixels over the edge of the imaged cylinder. The propagation distance used was $z = 1$ m.}
+\label{fig:5}
+\end{Figure}
+From observing the results in figure \ref{fig:5}, I hypothesized that the underlying reason why my Fourier transport-of-intensity equation (TIE) method did not work as expected was due to an effect known as Gibbs phenomenon, this effect occurs when the nth partial sum of a Fourier series undergoes large oscillations near regions with jump discontinuities\cite{Gibbs} (i.e. like the phase-contrast fringes). Discovering that higher degree polynomial interpolation does not always improve accuracy was interesting and certainly unexpected.
+
+The phase-contrast images visible in figure \ref{fig:6} were obtained using a finite differences TIE with fourth order Runge-Kutta method (RK). As can be seen here, the phase-contrast peaks are considerably higher than the profile found using the Fourier method in figure \ref{fig:5}. The parameters used to obtain figure \ref{fig:6} were chosen to be identical to those used to obtain figure \ref{fig:5}, with the exception of the sigmoid blurring parameter, which was smaller in magnitude under the finite differences TIE+RK method.
+\begin{Figure} 
+\centering
+\includegraphics[width=\linewidth]{FD_intensity_profile.pdf}
+\captionof{figure}{Phase contrast image in 2D (a), phase-contrast image in 1D (b) and an enhanced view of (b) showing very subtle ringing artefacts (instability)(c). The parameters used to obtain this image were an X-ray energy $E = 22.1629$ keV (corresponding to a Ag k-alpha 1 source), a refractive index decrement for the water cylinder of $\delta = 4.68141\times 10^{-7}$ and an attenuation coefficient of  $\mu = 64.38436~\mathrm{m^{-1}}$. The cylinder radius was $R = 6.375$ mm. The sigmoid function blurred $0.14$ pixels over the edge of the imaged cylinder. The propagation distance used was $z = 1$ m.}
+\label{fig:6} 
+\end{Figure}
+The result in figure \ref{fig:6} presented an apparent improvement in the height of the expected phase-contrast fringes when compared to the TIE method implemented by the XRI library (developed and used by the X-ray imaging group at monash), this TIE method uses a single Euler step approximation. The apparent improvement in the intensity amplitude result was the original reason which lead me to explore the differences between the version of the TIE that I developed using the RK algorithm (see \ref{TIE+RK}) against other phase-contrast propagation methods commonly used in the field.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Simulating two concentric homogeneous cylinders: Density difference tests}
+As described in section \ref{2 cylinders}, to test if there is a density dependence in phase-contrast, I first use a sample consisting of two cylinders with the outermost one made of water and the innermost one made of ice.
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{ice_water_AS.pdf}
+\captionof{figure}{Phase contrast image and cross section obtained with the angular spectrum formulation method developed by the X-ray imaging group (from the XRI library). The X-ray energy used in this simulation was $E = 22.1629$ keV. The water cylinder has a refractive index decrement $\delta_w = 4.69337\times10^{-7}$, the attenuation coefficient of water is $\mu_w = 64.55083~\mathrm{m^{-1}}$. The ice cylinder has a refractive index decrement $\delta_i = 4.31790\times10^{-7}$, and attenuation coefficient $\mu_i = 59.38677~\mathrm{m^{-1}}$. The density difference between these materials is $\Delta \rho = 0.08~\mathrm{g cm^{-3}}$. The cylinders' radii were $R_w = 2$mm and $R_i = 1$mm. The propagation distance used was $z = 2.5$ m. Asymmetry visible in the 2D plot is due to aliasing effects.}
+\label{fig:7}
+\end{Figure}
+
+In figure \ref{fig:7} one can see phase contrast at the materials interface, even though the fringes are small, this example of a relatively large change in density demonstrates that changes in material density throughout the imaged sample can in fact affect the phase-contrast imaging process.
+
+In the following simulation, I take into account the apparatus parameters and the resolution of the detector used in the X-ray imaging lab at Monash. I made this simulation to see whether or not we would be able to see small fringes in a real experiment. Using the magnification factors we would use in the lab (i.e. $2.5$ and $4.0$) and our photon detector dimensions I resized the spatial array boundaries to match those of the detector. I also scaled the pixel size to match the pixels in the photon detector. I did this so that the pixels in the object plane are adequately sized given the expected size of the pixels in the detector plane. I also calculated the effective propagation distance.
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{LAB_ice_water_AS_2_magnifications.pdf}
+\captionof{figure}{Phase contrast images and cross sections of two concentric cylinders made of different density homogeneous materials. The simulations were obtained with the angular spectrum formulation method developed by the X-ray imaging group. Each figure matrix row represents either sub-figure (a) or (b). Where sub-figure (a) corresponds to a magnification factor of $2.5$ and sub-figure (b) to a magnification factor of $4.0$. The X-ray energy used in this simulation was $E = 22.1629$ keV. The water cylinder has a refractive index decrement $\delta_w = 4.69337\times10^{-7}$, the attenuation coefficient of water is $\mu_w = 64.55083~\mathrm{m^{-1}}$. The ice cylinder has a refractive index decrement $\delta_i = 4.31790\times10^{-7}$, and attenuation coefficient $\mu_i = 59.38677~\mathrm{m^{-1}}$. The density difference between these materials is $\Delta \rho = 0.08~\mathrm{g cm^{-3}}$. The cylinders' radii were $R_w = 2$mm and $R_i = 1$mm. The effective propagation distances used were $z_{\mathrm{eff}} = 0.6$ m and $z_{\mathrm{eff}} = 0.47$ m for sub-figure (a) and sub-figure (b), respectively.}
+\label{fig:8}
+\end{Figure}
+Originally, we aimed to test these simulation results experimentally, but given that the phase-contrast fringes observable in figure \ref{fig:8} were so small, we decided against doing the experiment, since we would not observe much in a lab setting. 
+
+To continue my tests of the importance of density in phase-contrast, I assume in figure \ref{fig:9}, that grey and white matter have the same chemical compositions but distinct densities.
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{pessimistic_case.pdf}
+\captionof{figure}{Phase contrast image (a), cross section (b), and enhanced view of one the inner cylinder phase-contrast fringes (c) obtained with the angular spectrum formulation method as developed by the X-ray imaging group. In (c) it can be seen that the phase-contrast fringes from the inner cylinder are extremely small but can still be observed when the image in (b) is amplified enough. The X-ray energy is $E = 24$ keV. The grey matter cylinder has a refractive index decrement $\delta_{\mathrm{GM}} = 4.1345\times10^{-7}$, and the attenuation coefficient of grey matter is $\mu_{\mathrm{GM}} = 58.2978~\mathrm{m^{-1}}$. The white matter cylinder has a refractive index decrement $\delta_{\mathrm{WM}} = 411.87\times10^{-7}$ and its attenuation coefficient $\mu_{\mathrm{WM}}= 58.0747~\mathrm{m^{-1}}$. The density difference between these materials is $\Delta \rho = 0.004~\mathrm{g cm^{-3}}$\cite{ITIS}. The cylinders' radii were $R_{\mathrm{GM}} = 2$ mm and $R_{\mathrm{WM}} = 1$ mm. The propagation distance used was $z = 2.5$ m.}
+\label{fig:9}
+\end{Figure}
+My simulations demonstrate that even a small density difference like the one seen in \ref{fig:9} can produce phase-contrast fringes. Admittedly, my simulations only consider perfect data, therefore the fringes would clearly be too small to see using real sample materials in a laboratory experiment.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Improving the TIE numerics}\label{TIE+RK}
+\subsection{Chemical difference test: Grey matter and white matter}
+As opposed to the simulation in figure \ref{fig:9}, figure \ref{fig:10} assumes that grey and white matter are different chemically. This condition returns  easily observable fringes for both outer and inner cylinders. This simulation likely represents a more realistic scenario than \ref{fig:9}, given that there are likely chemical differences between the materials in a real brain.
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{optimistic_case.pdf}
+\captionof{figure}{Phase contrast image and phase-contrast cross section obtained with the angular spectrum formulation method developed by the X-ray imaging group. The X-ray energy used in this simulation was $E = 24$ keV. The grey matter cylinder has a refractive index decrement $\delta_{\mathrm{GM}} = 4.591\times10^{-7}$, the attenuation coefficient of grey matter is $\mu_{\mathrm{GM}} = 52~\mathrm{m^{-1}}$\cite{Linda}. The white matter cylinder has a refractive index decrement $\delta_{\mathrm{WM}} = 4.2631\times10^{-7}$ and attenuation coefficient $\mu_{\mathrm{WM}}= 56~\mathrm{m^{-1}}$\cite{Linda}. The cylinders' radii were $R_{\mathrm{GM}} = 2$ mm and $R_{\mathrm{WM}} = 1$ mm. The propagation distance used was $z = 2.5$ m.}
+\label{fig:10}
+\end{Figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Producing and using X-rays in phase-contrast imaging}\label{poly}
+As explained in section \ref{ASF}, X-ray imaging is done with polychromatic X-rays with non-trivial spectra\cite{CH49}
+X-rays are commonly produced by using a heated filament that emits electrons by thermionic emission, the electrons are accelerated by a high voltage and collide with a metal target. In simple terms, the accelerated electrons interact with the atoms comprising the metal target by (a) impacting a shell electron in the target and dislodging (b) it causing photoelectron emission, (c) having their path deviated without having any actual contact with the target atoms or directly impacting the nucleus.
+
+Characteristic X-rays are created by interactions (a) and (b) described above. As the incident electron releases an inner shell electron, this leaves a vacancy in the atom's inner shell. The vacancy is quickly filled by an outer shell electron which causes photon emission with an energy equal to the energy difference between the inner and outer shells. The term ``characteristic" refers to the fact that each element has a distinct pattern of X-ray photoelectron emission.
+Interactions of type (c) are classified as Bremsstrahlung (Background/ Breaking) radiation. A source of Bremsstrahlung radiation occurs due to incident electrons interacting with the nuclear electric field. The electron paths may be deflected or decelerated and recaptured by the atom into an energy electron shell. 
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{characteristic_Bremsstrahlung.pdf}
+\captionof{figure}{Cartoons of accelerated electrons interacting with target atoms. In sub-figures: (a) and (b), characteristic X-ray emission is represented by (a) an accelerated electron hitting an inner shell electron expelling it from the atom, while an outer shell electron promptly moves inward to fill the inner shell gap (b) releasing a characteristic X-ray. Sub-figure: (c) represents a visualisation of the types of possible Bremsstrahlung radiation, ranging from low energy/distant, to high energy interactions between the incident accelerated electrons and the atomic nucleus.}
+\label{fig:1.3}
+\end{Figure}
+\begin{Figure}
+\centering
+\includegraphics[width=\linewidth]{W_poly_spectrum.pdf}
+\captionof{figure}{Histograms of photon counts versus energy for the polychromatic spectrum of the tungsten target used in the Monash X-ray imaging laboratory. The energy spread for both sub-figures (a) and (b) is approximately $35$ keV, sub-figure (a) is an unfiltered spectrum while sub-figure (b) was filtered with a piece of Aluminium of thickness $0.5$ mm. In the lower energy region of sub-figure (a), three characteristic X-ray peaks can be seen, these energy peaks are approximately centred at $8.1$ keV, $9.7$ keV and $11.2$ keV from left to right. The Bremsstrahlung peak is centred at approximately $21$ keV. In the case of sub-figure (b) the filtered spectrum aims to simulate a monochromatic energy peak. This peak is approximately centred at $24.6$ keV. In the lower energy region of sub-figure (b), a smaller peak is centred approximately at $6$ keV, this peak is likely due to thermal electronic noise. Original image by M Kitchen (2021).}
+\label{fig:poly}
+\end{Figure}
+
+Some simulations in this work used selected energy values visible in figure \ref{fig:poly} (i.e. the three characteristic peaks and the Bremsstrahlung peak of tungsten) to quantify potential fringe shifting due to energy dispersion (see section \ref{poly}).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{The problems with polychromatic spectra}\label{poly}
+Given that the mathematical background of phase-contrast imaging requires the assumption of wave-field monochromaticity (see \ref{ASF}), this work investigates how phase-contrast X-ray images can be enhanced by decreasing the range of polychromatic spectra. 
+First, I carried out simulations of monochromatic spectra throughout the whole energy range of tungsten obtained at $35$ kV. The simulations were created using three different methods of propagation based phase-contrast, the angular spectrum formulation (ASF) (see \ref{ASF}), the transport-of-intensity equation implemented using fourth order Runge-Kutta (TIE+RK) (see \ref{TIE+RK}) and the conventional transport-of-intensity equation (TIE) (see \ref{TIE}).
+
+My supervisor and I verified the simulation results in the laboratory. The laboratory tests involved only the unfiltered polychromatic spectrum of a tungsten target. The object selected for imaging was a perspex rod with a diameter $D = 9.8$ mm. The source-to-detector distance (SDD) used in our tests was $2.501 \pm 0.001$ m as measured with a laser meter. We used magnifications $M = 2.5$ and $M = 4.0$, which resulted in the effective propagation distances $z_{\mathrm{eff}} = 0.6$ m and $z_{\mathrm{eff}} = 0.47$ m for each magnification, respectively. The power used in the X-ray target was set to $P = 20~\mathrm{W}$, because this is roughly half the maximum power of the apparatus, which provides a good compromise between photon flux and spot size, resulting in a good balance between signal-to-noise ratio (SNR) and resolution. The detector used was a photon counting detector that can be configured with a low energy threshold. 
+The photon counting detector is comprised of 5 panels, each separated from the others by a small width. The detector's surface area is $(70\times14)~\mathrm{mm}^2$ with square pixel size of $55~\mathrm{\mu m}$. This photon counting detector has a point-spread-function (PSF) of one pixel width.
+The detector's energy threshold was changed three times during our experiment to test different width spectra. The energy thresholds used energy values that extended the width of the spectrum to cover the Bremsstrahlung peak and distinct characteristic X-rays as per the unfiltered spectrum in figure \ref{fig:poly} (a).
+In practice, X-ray imaging methods attempt to make the beam as monochromatic as possible by means of filtering the spectrum or by setting detector energy threshold to only match certain frequencies. This work shows that narrowing the energy range of detectors improves the phase-contrast fringe resolution resulting from imaging materials using different mean energy spectra.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Improving the TIE numerics}\label{TIE+RK}
 Here I want to expand on how my evaluation of the transport-of-intensity equation (TIE) produces a better solution than the regular usage of the TIE in the propagation problem.
 The improvement to the numerics consists on increasing the order of the derivatives used in the numerical evaluation of the TIE. My method applies the fourth-order Runge-Kutta evolution algorithm (RK) to propagate the intensity of the monochromatic scalar electromagnetic wave-field over a total distance in meters using the TIE. I employ the RK evolution algorithm as
 \begin{equation} \label{eq:17}
@@ -317,176 +395,88 @@ The improvement to the numerics consists on increasing the order of the derivati
 \end{equation}
 where the spatial evolution step is set as $\Delta z = 1$~mm. The propagation via fourth order RK over a spatial interval is done by solving a differential equation $f$ using four Euler-style steps (i.e. the $k_i$ coefficients) where each Euler-style step involves one evaluation of the differential equation with slightly different input parameters. In the case of the TIE, the input parameters are the propagation distance $z_n$ increasing each iteration by the spatial evolution step $\Delta z$, the intensity evaluated at $z_n$ increased proportionally to the previously found $k_i$ coefficient. The RK method combines the information obtained for each solution to match a Taylor series expansion solution up to fourth order. The combined evaluations of the differential equation eliminate the error terms order by order, resulting in the remaining error being very small\cite{N_R}.
 
-The TIE implemented using RK (TIE+RK) appears more accurate than the conventional TIE for doing numerical simulations, while also demonstrating higher robustness than the angular spectrum formulation (ASF). However, the ASF is still likely the most accurate solution under ideal conditions, since the ASF is a discrete version of the exact solution to the Helmholtz wave equation (see \ref{ASF}).
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Results and Discussion}\label{Results}
 
-\subsection{Shifting fringes}\label{betterthan}
-
-The angular spectrum formulation (ASF) is considered the ``gold standard" intensity propagation algorithm to compare against. The ASF demonstrates that the phase-contrast fringe position will shift as radiation energy changes. Another noteworthy fact is that under these same conditions the standard TIE algorithm phase-contrast fringes never budge as can be seen in figure \ref{fig:2.1}. I figured that if the addition of the fourth-order Runge-Kutta algorithm to the TIE (TIE+RK) produced fringe shifting with changing radiation energy, then this will be proof that the TIE+RK method is a more accurate numerical method than the standard first order finite difference TIE.
-
+\subsection{The problems with polychromatic spectra: Shifting fringes}\label{betterthan}
+The angular spectrum formulation (ASF) is considered the ``gold standard" intensity propagation algorithm to compare against. Both the ASF and the TIE+RK methods display clear shifting of phase-contrast fringes as the energy threshold used in the phase-contrast simulation is changed. The conventional TIE method produced minimal fringe shifts, as can be seen in figure \ref{fig:2.1}. I figured that if the addition of the fourth-order Runge-Kutta algorithm to the TIE (TIE+RK) produced fringe obvious shifting with changing radiation energy, then this will be proof that the TIE+RK method as a more accurate numerical method than the standard first order finite difference TIE.
 \begin{Figure} 
  \centering
   \hspace*{-0.9cm}
  \includegraphics[width=\linewidth]{AS_vs_TIE+RK_vs_TIE_1.pdf}
- \captionof{figure}{These nine plots demonstrate the behaviour of the phase-contrast intensity fringes as a function of space and energy. The vertical axes represent intensity and the horizontal axes the pixel position, the different coloured curves represent the energy used to obtain the phase-contrast intensity profile. Each row in this plot matrix represents the numerical method that was used to obtain the phase-contrast plots, i.e. (a) Angular spectrum formulation (ASF), (b) transport-of-intensity equation implemented with fourth order-Runge-Kutta (TIE+RK), and (c) the conventional transport-of-intensity equation (TIE). The middle and right-most columns in this plot matrix display an amplified view of the left and right phase-contrast fringes for each method respectively.}
+ \captionof{figure}{These nine plots demonstrate the behaviour of the phase-contrast intensity fringes as a function of space and energy. The vertical axes represent intensity and the horizontal axes the pixel position, the different coloured curves represent the energy used to obtain the phase-contrast intensity profile. Each row in this plot matrix represents the numerical method that was used to obtain the phase-contrast plots, i.e. (a) Angular spectrum formulation (ASF), (b) transport-of-intensity equation implemented with fourth order-Runge-Kutta (TIE+RK), and (c) the conventional transport-of-intensity equation (TIE). The middle and right-most columns in this plot matrix display an amplified view of the left and right phase-contrast fringes for each method, respectively.
+ The X-ray energies used in this simulations were $E_1 = 8.1$ keV, $E_2 = 9.7$ keV, $E_3 = 11.2$ keV and $E = 21$ keV. The cylinder material was liquid water, and it had refractive index decrements $\delta_1 = 3.52955\times10^{-6}$, $\delta_2 = 2.45782\times10^{-6}$, $\delta_3 = 1.84196\times10^{-6}$and $\delta_4 = 5.22809\times10^{-6}$for each energy value, respectively. The attenuation coefficients were $\mu_1 = 999.134~\mathrm{m^{-1}}$, $\mu_2 = 583.223~\mathrm{m^{-1}}$, $\mu_3 = 381.856~\mathrm{m^{-1}}$ and $\mu_4 = 72.527~\mathrm{m^{-1}}$ corresponding to each energy, respectively. The cylinder's radius was $R = 2$ mm. The propagation distance used was $z = 2.5$ m.}
 \label{fig:2.1} 
 \end{Figure}
 
-As is clearly visible in figure \ref{fig:2.1}, each method produces different looking intensity profiles for each independent energy value. In the case of sub-figure (a) for the ASF, the numerical instability visible is much more pervasive than for the other two methods (i.e. (b) TIE+RK, (c) TIE). The ringing visible in the ASF plots only decreases when the energy value used is near the Bremsstrahlung peak of Tungsten. This is probably due to the construction of the ASF algorithm, since it is calculated in Fourier space. The nature of the ringing visible is probably due to the behaviour of Fourier sums undergoing large oscillations where they encounter jump discontinuities. The TIE+RK method also presents  ringing artefacts, but these are less exaggerated than the ASF. At the same time the TIE+RK method demonstrates similar intensity amplitudes to those shown in the ASF plots.
+As is clearly visible in figure \ref{fig:2.1}, each method produces different looking intensity profiles for each independent energy value. In the case of sub-figure (a) for the ASF, the numerical instability visible is much more pervasive than for the other two methods (i.e. (b) TIE+RK, (c) TIE). The ringing visible in the ASF plots only decreases when the energy value used is near the Bremsstrahlung peak of tungsten. This is probably due to the construction of the ASF algorithm, since it is calculated in Fourier space. The nature of the ringing visible is probably due to the behaviour of Fourier sums undergoing large oscillations where they encounter jump discontinuities. The TIE+RK method also presents  ringing artefacts, but these are less exaggerated than the ASF. At the same time the TIE+RK method demonstrates similar intensity amplitudes to those shown in the ASF plots.
 Lastly, the TIE method appears as the most numerically stable but it falls short from the phase-contrast amplitudes achieved by the other two methods.
+Both the TIE+RK and the TIE methods display negative intensity values, this is clearly a non-physical effect. At this moment I unfortunately cannot explain the possible reasons why these numerical methods produce these negative intensities, and why they appear more prevalent for the conventional TIE method (see figure \ref{fig:2.2}). 
 
-Regardless of the visible instability, the ASF method represents the most accurate solution to the phase-contrast propagation problem. In figure \ref{fig:2.1} one can see that both the ASF and the TIE+RK methods have fringes that shift horizontally as the energy values increase, to see this effect more clearly see figure \ref{fig:2.2} below.
+Regardless of the visible instability, the ASF method represents the most accurate solution to the phase-contrast propagation problem. In figure \ref{fig:2.1}, one can see that both the ASF and the TIE+RK methods have fringes that dramatically shift horizontally as the energy values increase, to see this effect more clearly see figure \ref{fig:2.2} below.
 
 \begin{Figure} 
  \centering
   \hspace*{-0.9cm}
  \includegraphics[width=\linewidth]{AS_vs_TIE+RK_vs_TIE_2.pdf}
- \captionof{figure}{These twelve plots demonstrate the shifting behaviour of phase-contrast fringes as a function of space and energy. This figure focuses solely on the \textbf{left} phase-contrast fringe for each imaging method used in the fringe shifting simulations in figure \ref{fig:2.1}. The plots' vertical axes represent intensity and the horizontal axes the pixel position. Each column in this matrix represents the method used to obtain the phase-contrast intensity profiles (see sub-figures (a) ASF, (b) TIE+RK and (c) TIE). The sub-figures should be studied from top to bottom since the energy values used to obtain the phase-contrast plots ranges from the top row at the lowest energy $E = 8.1$ keV, $E = 9.7$ keV, $E = 11.2$ keV and finally to $E = 21$ keV in the last row. All phase-contrast intensity profiles were obtained at a propagation distance $z = 2.5$ m. In order to easily observe the fringe shifting, I have included an orange vertical dashed line in each plot. The dashed orange line marks the central position of the left phase-contrast fringe at the lowest energy in the range, i.e. $E = 8.1$ keV. The orange dashed line should be used as a reference of the horizontal fringe shifting for each method. The phase-contrast fringes obtained using the ASF method (visible in sub-figure (a)) move horizontally to the right approximately 6 pixels from the lowest to the highest energy in the range. The TIE+RK method (sub-figure (b)) shifts horizontally approximately 4 pixels in the same fashion as the ASF for the same energy range. Finally, the TIE method does not show a horizontal shift of fringes as a function of energy.}
+ \captionof{figure}{These twelve plots demonstrate the shifting behaviour of phase-contrast fringes as a function of space and energy. This figure focuses solely on the \textbf{left} phase-contrast fringe for each imaging method used in the fringe shifting simulations in figure \ref{fig:2.1}. The plots' vertical axes represent intensity and the horizontal axes the pixel position. Each column in this matrix represents the method used to obtain the phase-contrast intensity profiles (see sub-figures (a) ASF, (b) TIE+RK and (c) TIE). The sub-figures should be studied from top to bottom since the energy values used to obtain the phase-contrast plots ranges from the top row at the lowest energy $E_1 = 8.1$ keV, $E_2 = 9.7$ keV, $E_3 = 11.2$ keV and finally to $E_4 = 21$ keV in the last row. All phase-contrast intensity profiles were obtained at a propagation distance $z = 2.5$ m. In order to easily observe the fringe shifting, I have included an orange vertical dashed line in each plot. The dashed orange line marks the central position of the left phase-contrast fringe at the lowest energy in the range, i.e. $E = 8.1$ keV. The orange dashed line should be used as a reference of the horizontal fringe shifting for each method. The phase-contrast fringes obtained using the ASF method (visible in sub-figure (a)) move horizontally to the right approximately 6 pixels from the lowest to the highest energy in the range. The TIE+RK method (sub-figure (b)) shifts horizontally approximately 4 pixels in the same fashion as the ASF for the same energy range. Finally, the TIE method shows a very small horizontal shift of fringes a function of energy, maybe the shift occurs over 1 to 0.5 pixels. The sample material was a liquid water cylinder, and it had refractive index decrements $\delta_1 = 3.52955\times10^{-6}$, $\delta_2 = 2.45782\times10^{-6}$, $\delta_3 = 1.84196\times10^{-6}$and $\delta_4 = 5.22809\times10^{-6}$for each energy value, respectively. The attenuation coefficients were $\mu_1 = 999.134~\mathrm{m^{-1}}$, $\mu_2 = 583.223~\mathrm{m^{-1}}$, $\mu_3 = 381.856~\mathrm{m^{-1}}$ and $\mu_4 = 72.527~\mathrm{m^{-1}}$ corresponding to each energy, respectively. The cylinder's radius was $R = 2$ mm. The propagation distance used was $z = 2.5$ m.}
 \label{fig:2.2} 
 \end{Figure}
-The main takeaway from figure \ref{fig:2.2} is a question of stability versus accuracy. It appears that the TIE+RK performs more accurately than the conventionally used TIE, and it may also be more numerically robust than the ASF when doing phase-contrast simulations. Evidently, using higher order terms instead of a single order finite difference approximation for the TIE improves phase-contrast imaging results, but this method does not necessarily translate to the problem of phase retrieval, since one of the steps in the Paganin et al (2002) phase retrieval algorithm is based on the TIE using the finite difference approximation (see section \ref{PR}). 
+
+The main takeaway from figure \ref{fig:2.2} is a question of stability versus accuracy. It appears that the TIE+RK performs more accurately than the conventionally used TIE, and it may also be more numerically robust than the ASF when doing phase-contrast simulations. However, the ASF is still likely the most accurate solution under ideal conditions, since the ASF is a discrete version of the exact solution to the Helmholtz wave equation (see \ref{ASF}). Evidently, using higher order terms instead of a single order finite difference approximation for the TIE improves phase-contrast imaging results. This method does not necessarily translate to the problem of phase retrieval, since one of the steps in the Paganin et al (2002) phase retrieval algorithm is based on the TIE using the finite difference approximation (see section \ref{PR}). 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Verifying fringe shifting in the lab}
-The phase-contrast images below were obtained in the laboratory of the X-ray imaging group at Monash university. 
-The X-ray imaged object was a perspex rod with a diameter $D = 9.8$ mm. The source-to-detector distance (SDD) used in our tests was $2.5010 \pm 0.0005$ m.
-To obtain the figures below we used the magnification $M = 4.0$X which resulted in the effective propagation distance $z_{\mathrm{eff}} = 0.47$ m. The detector used was a photon counting detector comprised of 5 panels, each separated from the others by a small width. The detector's surface area is $(70\times14)~\mathrm{mm}^2$ with square pixel size of $55~\mathrm{\mu m}$.
 
+The following phase-contrast images (PCI) correspond to the results obtained in the laboratory of the X-ray imaging group at Monash University.
 \begin{Figure}  
  \centering
  \includegraphics[width=\linewidth]{100_7keV.pdf}
- \captionof{figure}{Phase contrast image (PCI) of a perspex rod in (a) two dimensions and in (b) one dimension obtained using the energy threshold $E = 7$ keV for a tungsten target subjected to a voltage of $35$ kV. The figure matrix should be studied as separate rows, corresponding to different sub-figures. Sub-figure (a) is the detector image. The pixel colour structure represents the intensity as pixel brightness. The phase-contrast fringes are shown clearly as yellow coloured vertical regions. On the right of sub-figure (a), I include an amplified view of a section in the left fringe to demonstrate the fringe width in pixels. At this threshold energy the fringe has tails and the approximate width appears close to three pixels. In sub-figure (b) the same information as in (a)is visible but in one dimension. The apparent ``phase-contrast fringes" visible close to the centre regions of the phase-contrast images are most likely  undesirable artefacts due to the detector panels separations and not real phase-contrast fringes. The propagation distance for this test was $z_{\mathrm{eff}} = 0.47$ m}
+ \captionof{figure}{Phase contrast image (PCI) of a perspex rod in (a) two dimensions and in (b) one dimension obtained using the energy threshold $E = 7$ keV for a tungsten target subjected to a voltage of $35$ keV. The one dimensional PCI in (b) was obtained by taking a row average of the two dimensional PCI in (a). The figure matrix should be studied as separate rows, corresponding to different sub-figures. Sub-figure (a) is the detector image. The pixel colour structure represents the intensity as pixel brightness. The phase-contrast fringes are shown clearly as yellow coloured vertical regions. On the right of sub-figure (a), I include an amplified view of a section in the left fringe to demonstrate the fringe width in pixels. At this threshold energy the fringe has tails and the approximate width appears close to three pixels. In sub-figure (b) the same information as in (a)is visible but in one dimension. The apparent ``phase-contrast fringes" visible close to the centre regions of the phase-contrast images are most likely  undesirable artefacts due to the detector panels separations and not real phase-contrast fringes. The propagation distance for this test was $z_{\mathrm{eff}} = 0.47$ m}
 \label{fig:2.6}
 \end{Figure}
 
 \begin{Figure}
  \centering
  \includegraphics[width=\linewidth]{100_12p5keV.pdf}
- \captionof{figure}{Phase contrast image (PCI) of a perspex rod in (a) two dimensions and in (b) one dimension obtained using the energy threshold of $E = 12.5$ keV for a tungsten target subjected to a voltage of $35$ kV. The pixel colour structure represents the intensity as pixel brightness. The phase-contrast fringes are shown clearly as yellow coloured vertical regions. On the right of sub-figure (a), I include an amplified view of a section in the left fringe to demonstrate the fringe width in pixels. At this threshold energy the fringe has tails and the approximate width appears close to three pixels, here the tails appear less bright than the central pixel column representing the phase-contrast fringe. In sub-figure (b) the same information is visible but in one dimension. The apparent ``phase-contrast fringes" close to the centre regions of the phase-contrast images are likely undesirable artefacts due to the detector panels separations, and not real phase-contrast.  The propagation distance for this test was $z_{\mathrm{eff}} = 0.47$ m}
+ \captionof{figure}{Phase contrast image (PCI) of a perspex rod in (a) two dimensions and in (b) one dimension obtained using the energy threshold of $E = 12.5$ keV for a tungsten target subjected to a voltage of $35$ keV. The one dimensional PCI in (b) was obtained by taking a row average of the two dimensional PCI in (a). The pixel colour structure represents the intensity as pixel brightness. The phase-contrast fringes are shown clearly as yellow coloured vertical regions. On the right of sub-figure (a), I include an amplified view of a section in the left fringe to demonstrate the fringe width in pixels. At this threshold energy the fringe has tails and the approximate width appears close to three pixels, here the tails appear less bright than the central pixel column representing the phase-contrast fringe. In sub-figure (b) the same information is visible but in one dimension. The apparent ``phase-contrast fringes" close to the centre regions of the phase-contrast images are likely undesirable artefacts due to the detector panels separations, and not real phase-contrast.  The propagation distance for this test was $z_{\mathrm{eff}} = 0.47$ m}
 \label{fig:2.7}  
 \end{Figure}
 
 \begin{Figure}
  \centering
  \includegraphics[width=\linewidth]{100_19keV.pdf}
- \captionof{figure}{Phase contrast image (PCI) of a perspex rod in (a) two dimensions and in (b) one dimension obtained using an energy threshold of $E = 19$ keV for a tungsten target subjected to a voltage of $35$ kV. The figure matrix should be studied as separate rows, corresponding to different sub-figures. Sub-figure (a) is the detector image,The pixel colour structure represents the intensity as pixel brightness. The phase-contrast fringes are shown clearly as yellow coloured vertical regions. On the right of sub-figure (a), I include an amplified view of a section in the left fringe to demonstrate the fringe width in pixels. At this threshold energy the fringe has tails and the approximate width appears close to three pixels, here the tails appear considerably less bright than the central pixel column representing the phase-contrast fringe. In sub-figure (b) the same information is visible but in one dimension. The apparent ``phase-contrast fringes" visible close to the centre regions of the phase-contrast images are likely undesirable artefacts due to the detector panels separations, and not real phase-contrast. The propagation distance for this test was $z_{\mathrm{eff}} = 0.47$ m}
+ \captionof{figure}{Phase contrast image (PCI) of a perspex rod in (a) two dimensions and in (b) one dimension obtained using an energy threshold of $E = 19$ keV for a tungsten target subjected to a voltage of $35$ keV. The one dimensional PCI in (b) was obtained by taking a row average of the two dimensional PCI in (a). The figure matrix should be studied as separate rows, corresponding to different sub-figures. Sub-figure (a) is the detector image,The pixel colour structure represents the intensity as pixel brightness. The phase-contrast fringes are shown clearly as yellow coloured vertical regions. On the right of sub-figure (a), I include an amplified view of a section in the left fringe to demonstrate the fringe width in pixels. At this threshold energy the fringe has tails and the approximate width appears close to three pixels, here the tails appear considerably less bright than the central pixel column representing the phase-contrast fringe. In sub-figure (b) the same information is visible but in one dimension. The apparent ``phase-contrast fringes" visible close to the centre regions of the phase-contrast images are likely undesirable artefacts due to the detector panels separations, and not real phase-contrast. The propagation distance for this test was $z_{\mathrm{eff}} = 0.47$ m}
 \label{fig:2.8}  
 \end{Figure}
 
-The energy thresholds used energy values that extended the width of the spectrum to cover the Bremsstrahlung peak and distinct characteristic X-rays as per the unfiltered spectrum in sub-figure (a) in \ref{fig:poly}. Figures \ref{fig:2.6}, \ref{fig:2.7} and \ref{fig:2.8} demonstrate how phase-contrast changes when the X-ray spectrum varies in width. Using wide energy spectra improves the images signal-to-noise ratio (SNR) but it decreases fringe resolution. At this magnification, it is evident that simply setting the detector sensitivity to a specific energy range of the polychromatic X-ray spectrum of a target is not sufficient to minimise fringe broadening due to energy dispersion. 
+The energy thresholds used energy values that narrowed the width of the spectrum. All thresholds covered the Bremsstrahlung peak, but the increasing energy threshold only covered some characteristic X-rays as per the unfiltered spectrum in sub-figure (a) in \ref{fig:poly}. Figures \ref{fig:2.6}, \ref{fig:2.7} and \ref{fig:2.8} demonstrate how phase-contrast changes when the X-ray spectrum varies in width. Using wide energy spectra improves the images signal-to-noise ratio (SNR) but it decreases fringe resolution. At this magnification, it is evident that setting the detector energy threshold to match a specific energy range in the polychromatic X-ray spectrum is an adequate measure to minimise fringe broadening due to energy dispersion. 
+
+Figure \ref{fig:2.9} demonstrates the differences in between the one dimensional phase-contrast images obtained with distinct energy thresholds. The amplified sub-figures in \ref{fig:2.9} focus specifically in the remaining PCI intensity corresponding to the left fringe in each difference PCI. Each PCI difference shows quantitatively the broadening effect of phase-contrast fringes as a function of spectral energy bandwidth.
 \begin{Figure}
  \centering
  \includegraphics[width=\linewidth]{diff.pdf}
- \captionof{figure}{Phase contrast difference images. The figure matrix should be studied as separate rows, corresponding to different sub-figures. Each sub-figure represents the difference in intensity between: (a) $7$ keV and the $12.5$ keV spectra, (b) $7$ keV and the $19$ keV spectra, (both under magnification $M = 4.0$X). The sub-figures were obtained by subtracting the intensity profiles obtained from either $12.5$ keV or $19$ keV from the intensity profile yielded by the broadest spectrum at $7$ keV. On the right of both sub-figures (a) and (b) the included enhanced left fringe plot demonstrates that the phase-contrast differences between the broad ($7$ keV) and narrower spectra ($12.5$ keV or $19$ keV) \textbf{do not cancel out}.}
+ \captionof{figure}{Phase contrast difference images. The figure matrix should be studied as separate rows, corresponding to different sub-figures. Each sub-figure represents the difference in intensity between the images obtained with thresholds (a) $7$ keV and the $12.5$ keV, (b) $7$ keV and the $19$ keV (both under magnification $M = 4.0$). The sub-figures were obtained by subtracting the intensity profiles obtained from either $12.5$ keV or $19$ keV from the intensity profile yielded by the broadest spectrum at $7$ keV. On the right of both sub-figures (a) and (b) the included enhanced left fringe plot demonstrates that the phase-contrast differences between the broad ($7$ keV) and narrower spectra ($12.5$ keV or $19$ keV) \textbf{do not cancel out}.}
 \label{fig:2.9}  
 \end{Figure}
 The blurring effect visible when comparing figures \ref{fig:2.6}, \ref{fig:2.7} and \ref{fig:2.8} is well known amongst X-ray physicists. These numerical (see \ref{betterthan}) and experimental results confirm that the low energy region of the spectrum makes a measurable difference in phase-contrast. The results from a broad spectrum are less quantitative for propagation based phase-contrast imaging. Unfortunately, given the present circumstances, X-ray experimentalists and medical professionals have to consider the following trade-off: To have either more quantitative data or a high signal-to-noise ratio.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Simulating a single homogeneous cylinder}\label{cylinder}
-The phase-contrast images visible in figure \ref{fig:5} were obtained using a Fourier derivative transport-of-intensity (TIE) method. This method was not able to simultaneously match the expected phase-contrast peak height, at this energy while at the same time remaining fully stable. The parameters used to obtain this image were chosen to match a silver source, specifically the k-alpha 1 transition. The simulated material for this cylinder is water. As explained in section \ref{Single cylinder} the optical parameters for these simulations were obtained from the ``X-ray attenuation calculator".
-\begin{Figure}
-\centering
-\includegraphics[width=\linewidth]{Fourier_intensity_profile.pdf}
-\captionof{figure}{Phase contrast image in 2D(a), phase-contrast image in 1D (b), and an enhanced view of (b) showing ringing artefacts (c). These plots were obtained using the Fourier TIE method. The parameters used to obtain this images were an X-ray energy $E = 22.1629$ keV (corresponding to a Ag k-alpha 1 source), a refractive index decrement for the water cylinder of $\delta = 4.68141\times10^{-7}$ and an attenuation coefficient of $\mu = 64.38436~\mathrm{m^{-1}}$. The cylinder radius was $R = 6.375$ mm. A sigmoid function blurred $0.5$ pixels over the edge of the imaged cylinder. The propagation distance used was $z = 1$ m. Asymmetry visible in the 2D plot is due to aliasing effects.}
-\label{fig:5}
-\end{Figure}
-From observing the results in figure \ref{fig:5}, I hypothesized that the underlying reason why my Fourier transport-of-intensity equation (TIE) method did not work as expected was due to an effect known as Gibbs phenomenon, this effect occurs when the nth partial sum of a Fourier series undergoes large oscillations near regions with jump discontinuities\cite{Gibbs} (i.e. like the phase-contrast fringes). Discovering that higher degree polynomial interpolation does not always improve accuracy was interesting and certainly unexpected.
-
-The phase-contrast images visible in figure \ref{fig:6} were obtained using a finite differences TIE with fourth order Runge-Kutta method (RK). As can be seen here, the phase-contrast peaks are considerably higher than the profile found using the Fourier method in figure \ref{fig:5}. The parameters used to obtain figure \ref{fig:6} were chosen to be identical to those used to obtain figure \ref{fig:5}, with the exception of the sigmoid blurring parameter, which was softer under the finite differences TIE+RK method.
-\begin{Figure} 
-\centering
-\includegraphics[width=\linewidth]{FD_intensity_profile.pdf}
-\captionof{figure}{Phase contrast image in 2D (a), phase-contrast image in 1D (b) and an enhanced view of (b) showing very subtle ringing artefacts (instability)(c). The parameters used to obtain this image were an X-ray energy $E = 22.1629$ keV (corresponding to a Ag k-alpha 1 source), a refractive index decrement for the water cylinder of $\delta = 4.68141\times 10^{-7}$ and an attenuation coefficient of  $\mu = 64.38436~\mathrm{m^{-1}}$. The cylinder radius was $R = 6.375$ mm. The sigmoid function blurred $0.14$ pixels over the edge of the imaged cylinder. The propagation distance used was $z = 1$ m. Asymmetry visible in the 2D plot is due to aliasing effects.}
-\label{fig:6} 
-\end{Figure}
-The result in figure \ref{fig:6} presented an apparent improvement in the height of the expected phase-contrast fringes when compared to the TIE method implemented by the XRI library (developed and used by the X-ray imaging group at monash), this TIE method uses a single Euler step approximation. The apparent improvement in the intensity amplitude result was the original reason which lead me to explore the differences between my version of the TIE (using RK) against other phase-contrast propagation methods commonly used in the field.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Density difference test: water and ice}
-As described in section \ref{2 cylinders}, to test if there is a density dependence in phase-contrast, I first use a sample consisting of two cylinders with the outermost one made of water and the innermost one made of ice.
-\begin{Figure}
-\centering
-\includegraphics[width=\linewidth]{ice_water_AS.pdf}
-\captionof{figure}{Phase contrast image and cross section obtained with the angular spectrum formulation method developed by the X-ray imaging group (from the XRI library). The X-ray energy used in this simulation was $E = 22.1629$ keV. The water cylinder has a refractive index decrement $\delta_w = 4.69337\times10^{-7}$, the attenuation coefficient of water is $\mu_w = 64.55083~\mathrm{m^{-1}}$. The ice cylinder has a refractive index decrement $\delta_i = 4.31790\times10^{-7}$, and attenuation coefficient $\mu_i = 59.38677~\mathrm{m^{-1}}$. The density difference between these materials is $\Delta \rho = 0.08~\mathrm{g cm^{-3}}$. The cylinders' radii were $R_w = 2$mm and $R_i = 1$mm. The propagation distance used was $z = 2.5$ m. Asymmetry visible in the 2D plot is due to aliasing effects.}
-\label{fig:7}
-\end{Figure}
-With the result in figure \ref{fig:7}. I demonstrate that any changes in material density throughout the imaged sample can in fact affect the phase-contrast imaging process.
-In the following simulation, I take into account the apparatus parameters and the resolution of the detector used in the X-ray imaging lab at Monash. I made this simulation to see whether or not we would be able to see small fringes in a real experiment. Using the magnification factors we would use in the lab (i.e. $2.5$X and $4.0$X) and our photon detector dimensions I resized the spatial array boundaries to match those of the detector. I also scaled the pixel size to match the pixels in the photon detector. I did this so that the pixels in the object plane are adequately sized given the expected size of the pixels in the detector plane. I also calculated the effective propagation distance.
-\begin{Figure}
-\centering
-\includegraphics[width=\linewidth]{LAB_ice_water_AS_2_magnifications.pdf}
-\captionof{figure}{Phase contrast images and cross sections of two concentric cylinders made of different density homogeneous materials. The simulations were obtained with the angular spectrum formulation method developed by the X-ray imaging group. Each figure matrix row represents either sub-figure (a) or (b). Where sub-figure (a) corresponds to a magnification factor of $2.5$X and sub-figure (b) to a magnification factor of $4.0$X. The X-ray energy used in this simulation was $E = 22.1629$ keV. The water cylinder has a refractive index decrement $\delta_w = 4.69337\times10^{-7}$, the attenuation coefficient of water is $\mu_w = 64.55083~\mathrm{m^{-1}}$. The ice cylinder has a refractive index decrement $\delta_i = 4.31790\times10^{-7}$, and attenuation coefficient $\mu_i = 59.38677~\mathrm{m^{-1}}$. The density difference between these materials is $\Delta \rho = 0.08~\mathrm{g cm^{-3}}$. The cylinders' radii were $R_w = 2$mm and $R_i = 1$mm. The effective propagation distances used were $z_{\mathrm{eff}} = 0.6$ m and $z_{\mathrm{eff}} = 0.47$ m for sub-figure (a) and sub-figure (b) respectively.}
-\label{fig:8}
-\end{Figure}
-Originally, we aimed to test these simulation results experimentally, but given that the phase-contrast fringes observable in figure \ref{fig:8} were so small, we decided against doing the experiment, since we would not observe much in a lab setting. 
-\subsection{Density difference test: Grey matter and white matter}
-To continue my tests of the importance of density in phase-contrast, I assume in figure \ref{fig:9}, that grey and white matter have the same chemical compositions but distinct densities.
-\begin{Figure}
-\centering
-\includegraphics[width=\linewidth]{pessimistic_case.pdf}
-\captionof{figure}{Phase contrast image (a), cross section (b), and enhanced view of one the inner cylinder phase-contrast fringes (c) obtained with the angular spectrum formulation method as developed by the X-ray imaging group. In (c) it can be seen that the phase-contrast fringes from the inner cylinder are extremely small but can still be observed when the image in (b) is amplified enough. The X-ray energy is $E = 24$ keV. The grey matter cylinder has a refractive index decrement $\delta_{\mathrm{GM}} = 4.1345\times10^{-7}$, and the attenuation coefficient of grey matter is $\mu_{\mathrm{GM}} = 58.2978~\mathrm{m^{-1}}$. The white matter cylinder has a refractive index decrement $\delta_{\mathrm{WM}} = 411.87\times10^{-7}$ and its attenuation coefficient $\mu_{\mathrm{WM}}= 58.0747~\mathrm{m^{-1}}$. The density difference between these materials is $\Delta \rho = 0.004~\mathrm{g cm^{-3}}$\cite{ITIS}. The cylinders' radii were $R_{\mathrm{GM}} = 2$ mm and $R_{\mathrm{WM}} = 1$ mm. The propagation distance used was $z = 2.5$ m. Asymmetry visible in the 2D plot is due to aliasing effects.}
-\label{fig:9}
-\end{Figure}
-My simulations demonstrate that even a small density difference like the one seen in \ref{fig:9} can produce phase-contrast fringes. Admittedly, my simulations only consider perfect data, therefore the fringes would clearly be too small to see using real sample materials in a laboratory experiment.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Chemical difference test: Grey matter and white matter}
-As opposed to the simulation in figure \ref{fig:9}, figure \ref{fig:10} assumes that grey and white matter are different chemically. This condition returns  easily observable fringes for both outer and inner cylinders. This simulation likely represents a more realistic scenario than \ref{fig:9}, given that there are likely chemical differences between the materials in a real brain.
-\begin{Figure}
-\centering
-\includegraphics[width=\linewidth]{optimistic_case.pdf}
-\captionof{figure}{Phase contrast image and phase-contrast cross section obtained with the angular spectrum formulation method developed by the X-ray imaging group. The X-ray energy used in this simulation was $E = 24$ keV. The grey matter cylinder has a refractive index decrement $\delta_{\mathrm{GM}} = 4.591\times10^{-7}$, the attenuation coefficient of grey matter is $\mu_{\mathrm{GM}} = 52~\mathrm{m^{-1}}$\cite{Linda}. The white matter cylinder has a refractive index decrement $\delta_{\mathrm{WM}} = 4.2631\times10^{-7}$ and attenuation coefficient $\mu_{\mathrm{WM}}= 56~\mathrm{m^{-1}}$\cite{Linda}. The cylinders' radii were $R_{\mathrm{GM}} = 2$ mm and $R_{\mathrm{WM}} = 1$ mm. The propagation distance used was $z = 2.5$ m. Asymmetry visible in the 2D plot is due to aliasing effects.}
-\label{fig:10}
-\end{Figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Conclusion}\label{Conclusion}
 
-In this research project I investigated and developed a method with improved numerical accuracy for X-ray phase-contrast imaging simulations based on the transport-of-intensity equation by using fourth order Runge-Kutta to find the propagated intensity of a wave-field. It appears that we can still achieve great improvements in the computational techniques used in the field. In this context, a lesson to be learned from this work is that to develop X-ray imaging further, the exploration of different and more modern numerical methods and their mathematical backgrounds is still highly needed.
-Using the angular spectrum formulation I determined that material density differences alone can produce X-ray phase-contrast.  This work also includes details on an experiment that demonstrates that to improve the resolution of X-ray phase-contrast images it is necessary to develop better techniques to minimise the broadening effect of phase-contrast fringes due to X-ray polychromatic spectra. 
+In this research project I investigated and developed a method with improved numerical accuracy for X-ray phase-contrast imaging simulations based on the transport-of-intensity equation by using fourth order Runge-Kutta to find the propagated intensity of a wave-field. It appears that we can still achieve great improvements in the computational techniques used in the field. In this context, a lesson to be learned from this work is that to develop X-ray imaging further, the exploration of different and more modern numerical methods and their mathematical backgrounds is still needed.
+Using the angular spectrum formulation I determined that material density differences alone can produce X-ray phase-contrast. This work also includes details on an experiment that demonstrates that to improve the resolution of X-ray phase-contrast images it is necessary use energy resolving detectors and perhaps to develop better techniques to minimise the broadening effect of phase-contrast fringes due to X-ray polychromatic spectra. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \chapter{Acknowledgements}\label{Acknowledgements}
 
-I want to thank my supervisor Marcus for guiding me through the semester with great suggestions and lots of encouragement. I always enjoyed our talks about physics and other topics. I also want to thank our research group members for being so welcoming and, specifically to Linda for helping me with my writing, and to James for helping during my experiment. Lastly, I want to thank my partner Chris for being an endless source of inspiration, helpful advice and for all our interesting rants and discussions.  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+I want to thank my supervisor Marcus for guiding me through the semester with great suggestions and lots of encouragement. I always enjoyed our talks about physics and other topics. I also want to thank our research group members for being so welcoming and specifically to Linda for helping me with my writing, and to James for helping during my experiment. Lastly, I want to thank my partner Chris for being an endless source of inspiration, helpful advice and for all our interesting rants and discussions.  
 
-% \chapter{Appendix}\label{Appendix}
-% \section{Exploring phase retrieval with TIE+RK}\label{Aborted}
-% MORE HERE $>>>>>>>>>>>>>>>>>>>$
-% \subsection{Methods}
-% MORE HERE $>>>>>>>>>>>>>>>>>>>$
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% \subsection{Results}
-% MORE HERE $>>>>>>>>>>>>>>>>>>>$
-% % \begin{Figure}
-% % \centering
-% % \includegraphics[width=\linewidth]{phase_retrieval.pdf}
-% % \captionof{figure}{}
-% % \end{Figure}
-% MORE HERE $>>>>>>>>>>>>>>>>>>>$
-
-% % can we use TIE+RK in phase retrieval?
-% % Can TIE+RK be used for phase retrieval?
-
-%  % no one has successfully developed a phase retrieval algorithm based on the AS, but there are many such solutions using the TIE. 
-
-%  % One example is attached where the authors did use higher order terms instead of the finite difference approximation to improve phase retrieval, but it required multiple images to be acquired. This is a problem for X-ray imaging as it will increase the radiation dose. David Paganin's single image algorithm (attached) is ideal as it is noise robust and only requires a single exposure, but is based on the TIE with the finite difference approximation.
-
-%  % I don't know that the RK approach can help with phase retrieval, but I'd certainly like to think about that more.
-
-% MORE HERE $>>>>>>>>>>>>>>>>>>>$
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \bibliography{mybib}
 \bibliographystyle{unsrt}
